@@ -23,7 +23,7 @@ jobs:
         #  distribution: "temurin"
          # java-version: "17"
 
-      #- name: Test and analyze
+      # - name: Test and analyze
        # run: ./gradlew test jacocoTestReport sonar
         #env:
          # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
