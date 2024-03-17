@@ -35,7 +35,7 @@ public class UserController {
     List<User> users = userService.getUsers();
     List<UserGetDTO> userGetDTOs = new ArrayList<>();
 
-    // convert each user to the API representation
+    // convert each user to the API representation bb b
     for (User user : users) {
       userGetDTOs.add(DTOMapper.INSTANCE.convertEntityToUserGetDTO(user));
     }
