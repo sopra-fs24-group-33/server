@@ -19,6 +19,8 @@ public class Guest extends SuperUser {
         this.setGuestname("guest");
         this.setShame_tokens(0);
     }
+
+    //hallo
     @Column
 
     String guestname;
