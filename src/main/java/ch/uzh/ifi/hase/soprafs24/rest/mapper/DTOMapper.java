@@ -23,39 +23,18 @@ public interface DTOMapper {
 
     DTOMapper INSTANCE = Mappers.getMapper(DTOMapper.class);
 
-    @Mapping(source = "id", target = "id")
-    @Mapping(source = "username", target = "username")
-    @Mapping(source = "gamesPlayed", target = "gamesPlayed")
-    @Mapping(source = "shame_tokens", target = "shame_tokens")
-    @Mapping(source = "current_shame_tokens", target = "current_shame_tokens")
-    @Mapping(source = "password", target = "password")
-    @Mapping(source = "status", target = "status")
-    @Mapping(source = "token", target = "token")
     User convertUserPostDTOtoEntity(UserPostDTO userPostDTO);
 
-    @Mapping(source = "id", target = "id")
-    @Mapping(source = "username", target = "username")
-    @Mapping(source = "gamesPlayed", target = "gamesPlayed")
-    @Mapping(source = "shame_tokens", target = "shame_tokens")
-    @Mapping(source = "current_shame_tokens", target = "current_shame_tokens")
-    @Mapping(source = "password", target = "password")
-    @Mapping(source = "status", target = "status")
-    @Mapping(source = "token", target = "token")
     UserGetDTO convertEntityToUserGetDTO(User user);
 
-    @Mapping(source = "id", target = "id")
-    @Mapping(source = "status", target = "status")
-    @Mapping(source = "token", target = "token")
-    @Mapping(source = "guestname", target = "guestname")
-    @Mapping(source = "shame_tokens", target = "shame_tokens")
-    @Mapping(source = "isUser", target = "isUser")
+
     Guest convertGuestPostDTOtoEntity(GuestPostDTO guestPostDTO);
 
-    @Mapping(source = "id", target = "id")
-    @Mapping(source = "status", target = "status")
-    @Mapping(source = "token", target = "token")
-    @Mapping(source = "guestname", target = "guestname")
-    @Mapping(source = "shame_tokens", target = "shame_tokens")
-    @Mapping(source = "isUser", target = "isUser")
+
     GuestGetDTO convertEntityToGuestGetDTO(Guest guest);
+
+    GameLobby convertGameLobbyPostDTOtoEntity(GameLobbyPostDTO gamelobbyPostDTO);
+
+    GameLobbyGetDTO convertEntityToGameLobbyGetDTO(GameLobby gamelobby);
+
 }

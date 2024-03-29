@@ -1,24 +1,15 @@
 package ch.uzh.ifi.hase.soprafs24.entity;
 
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
-public class Player {
+public class Player implements Serializable {
 
-    public Player() {
-        throw new RuntimeException();
-    }
-
-
-    public Player(Guest guest)    {
-        this.setId(guest.getId());
-        this.setName(guest.getGuestname());
-
-    }
+    private static final long serialVersionUID = 1L;
 
     @Id
     private Long id;
@@ -28,13 +19,18 @@ public class Player {
     private String name;
     @Column
     private Integer shame_tokens;
+    @ManyToOne
+    @JsonIgnore
+    private GameLobby gameLobby;
 
-    @Column
-    Long gamelobbyreference;
+    @ManyToOne
+    private Game game;
 
     public List<Integer> getCards() {
         return cards;
     }
+
+
 
     public void setCards(List<Integer> cards) {
         this.cards = cards;
@@ -64,11 +60,11 @@ public class Player {
         this.shame_tokens = shame_tokens;
     }
 
-    public Long getGamelobbyreference() {
-        return gamelobbyreference;
+    public GameLobby getGameLobby() {
+        return gameLobby;
     }
 
-    public void setGamelobbyreference(Long gamelobbyreference) {
-        this.gamelobbyreference = gamelobbyreference;
+    public void setGameLobby(GameLobby gameLobby) {
+        this.gameLobby = gameLobby;
     }
 }

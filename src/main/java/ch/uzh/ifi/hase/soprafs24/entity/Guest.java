@@ -22,7 +22,6 @@ public class Guest extends SuperUser {
 
     //hallo
     @Column
-
     String guestname;
 
     @Column
@@ -68,4 +67,5 @@ public class Guest extends SuperUser {
     public void setIsUser(Long user) {
         this.isUser = user;
     }
+
 }
