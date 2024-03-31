@@ -1,70 +1,71 @@
 package ch.uzh.ifi.hase.soprafs24.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.List;
 
 @Entity
-public class Player implements Serializable {
+public class Player extends SuperUser {
+    public Player(User user) {
+        this.setStatus(user.getStatus());
+        this.setToken(user.getToken());
+        this.setGuestname(user.getUsername());
+        this.setIsUser(user.getId());
+        this.setShame_tokens(user.getShame_tokens());
+    }
+    public Player()  {
+        super();
+        this.setIsUser(null);
+        this.setGuestname("guest");
+        this.setShame_tokens(0);
+    }
 
-    private static final long serialVersionUID = 1L;
-
-    @Id
-    private Long id;
-    @ElementCollection
-    private List<Integer> cards;
+    //hallo
     @Column
-    private String name;
+    String guestname;
+
     @Column
-    private Integer shame_tokens;
-    @ManyToOne
-    @JsonIgnore
-    private GameLobby gameLobby;
+    int shame_tokens;
 
-    @ManyToOne
-    private Game game;
-
-    public List<Integer> getCards() {
-        return cards;
+    @Column
+    Long isUser;
+    public String getGuestname() {
+        return guestname;
     }
-
-
-
-    public void setCards(List<Integer> cards) {
-        this.cards = cards;
+    public void setGuestname(String guestname) {
+        this.guestname = guestname;
     }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Integer getShame_tokens() {
+    public int getShame_tokens() {
         return shame_tokens;
     }
-
-    public void setShame_tokens(Integer shame_tokens) {
+    public void setShame_tokens(int shame_tokens) {
         this.shame_tokens = shame_tokens;
     }
-
-    public GameLobby getGameLobby() {
-        return gameLobby;
+    public Long getId() {
+        return super.getId();
+    }
+    public void setId(Long id) {
+        super.setId(id);
+    }
+    public void setToken(String token)  {
+        super.setToken(token);
+    }
+    public String getToken()    {
+        return super.getToken();
+    }
+    public UserStatus getStatus() {
+        return super.getStatus();
+    }
+    public void setStatus(UserStatus status) {
+        super.setStatus(status);
     }
 
-    public void setGameLobby(GameLobby gameLobby) {
-        this.gameLobby = gameLobby;
+    public Long getIsUser() {
+        return isUser;
     }
+
+    public void setIsUser(Long user) {
+        this.isUser = user;
+    }
+
 }

@@ -1,9 +1,9 @@
 package ch.uzh.ifi.hase.soprafs24.service;
 import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
-import ch.uzh.ifi.hase.soprafs24.entity.Guest;
+import ch.uzh.ifi.hase.soprafs24.entity.Player;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
-import ch.uzh.ifi.hase.soprafs24.repository.GuestRepository;
+import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,25 +29,25 @@ import java.util.UUID;
  */
 @Service
 @Transactional
-public class GuestService {
+public class PlayerService {
 
-    private final Logger log = LoggerFactory.getLogger(GuestService.class);
+    private final Logger log = LoggerFactory.getLogger(PlayerService.class);
 
-    private final GuestRepository guestRepository;
+    private final PlayerRepository playerRepository;
     private final UserRepository userRepository;
 
     @Autowired
-    public GuestService(@Qualifier("guestRepository") GuestRepository guestRepository, UserRepository userRepository) {
-        this.guestRepository = guestRepository;
+    public PlayerService(@Qualifier("guestRepository") PlayerRepository playerRepository, UserRepository userRepository) {
+        this.playerRepository = playerRepository;
         this.userRepository = userRepository;
     }
 
-    public List<Guest> getGuests() {
-        return this.guestRepository.findAll();
+    public List<Player> getPlayers() {
+        return this.playerRepository.findAll();
     }
 
-    public Guest getGuest(Long guestId) {
-        Optional<Guest> optionalGuest = guestRepository.findById(guestId);
+    public Player getPlayer(Long guestId) {
+        Optional<Player> optionalGuest = playerRepository.findById(guestId);
         if (optionalGuest.isPresent()) {
             return optionalGuest.get();
         } else {
@@ -55,35 +55,34 @@ public class GuestService {
         }
     }
 
-    public Guest logoutUser(Long id)   {
-        Optional<Guest> guest = guestRepository.findById(id);
+    public Player logoutUser(Long id)   {
+        Optional<Player> guest = playerRepository.findById(id);
         if (guest.isPresent())  {
-            Guest foundGuest = guest.get();
-            guestRepository.delete(foundGuest);
-            guestRepository.flush();
-            return foundGuest;
+            Player foundPlayer = guest.get();
+            playerRepository.delete(foundPlayer);
+            playerRepository.flush();
+            return foundPlayer;
         }
         else{
             return null;
         }
     }
 
-    public Guest loginGuest()   {
-        Guest guest = new Guest();
-        guest.setToken(UUID.randomUUID().toString());
-        guest.setStatus(UserStatus.OFFLINE);
-        guestRepository.save(guest);
-        guestRepository.flush();
-        return guest;
+    public Player loginPlayer()   {
+        Player player = new Player();
+        player.setToken(UUID.randomUUID().toString());
+        player.setStatus(UserStatus.OFFLINE);
+        playerRepository.save(player);
+        playerRepository.flush();
+        return player;
     }
-    public Guest loginUser(Long id)   {
-        Optional<User> loginUser = userRepository.findById(id);
-        if (loginUser.isPresent())  {
-            User user = loginUser.get();
-            Guest loginGuest = new Guest(user);
-            guestRepository.save(loginGuest);
-            guestRepository.flush();
-            return loginGuest;
+    public Player loginUser(User loginUser)   {
+        User user = userRepository.findByUsername(loginUser.getUsername());
+        if (user != null && loginUser.getPassword().equals(user.getPassword())) {
+            Player loginPlayer = new Player(user);
+            playerRepository.save(loginPlayer);
+            playerRepository.flush();
+            return loginPlayer;
         }
         else{
             throw new RuntimeException();
@@ -92,17 +91,16 @@ public class GuestService {
 
 
 
-    public Guest createGuest(Guest newGuest) {
-        newGuest.setToken(UUID.randomUUID().toString());
-        newGuest.setStatus(UserStatus.OFFLINE);
-
+    public Player createPlayer(Player newPlayer) {
+        newPlayer.setToken(UUID.randomUUID().toString());
+        newPlayer.setStatus(UserStatus.OFFLINE);
         // saves the given entity but data is only persisted in the database once
         // flush() is called
-        newGuest = guestRepository.save(newGuest);
-        guestRepository.flush();
+        newPlayer = playerRepository.save(newPlayer);
+        playerRepository.flush();
 
-        log.debug("Created Information for Guest: {}", newGuest);
-        return newGuest;
+        log.debug("Created Information for Guest: {}", newPlayer);
+        return newPlayer;
     }
 
     /**
@@ -113,7 +111,7 @@ public class GuestService {
      *
      * @param guestToBeCreated
      * @throws org.springframework.web.server.ResponseStatusException
-     * @see Guest
+     * @see Player
      */
 }
 

@@ -4,9 +4,6 @@ import ch.uzh.ifi.hase.soprafs24.rest.dto.*;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-
 /**
  * DTOMapper
  * This class is responsible for generating classes that will automatically
@@ -28,10 +25,10 @@ public interface DTOMapper {
     UserGetDTO convertEntityToUserGetDTO(User user);
 
 
-    Guest convertGuestPostDTOtoEntity(GuestPostDTO guestPostDTO);
+    Player convertPlayerPostDTOtoEntity(PlayerPostDTO playerPostDTO);
 
 
-    GuestGetDTO convertEntityToGuestGetDTO(Guest guest);
+    PlayerGetDTO convertEntityToPlayerGetDTO(Player player);
 
     GameLobby convertGameLobbyPostDTOtoEntity(GameLobbyPostDTO gamelobbyPostDTO);
 

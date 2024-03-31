@@ -2,7 +2,7 @@ package ch.uzh.ifi.hase.soprafs24.rest.dto;
 
 import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 
-public class GuestGetDTO {
+public class PlayerGetDTO {
     private Long id;
     private String guestname;
     private int shame_tokens;

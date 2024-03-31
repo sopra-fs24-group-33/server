@@ -35,13 +35,13 @@ public class GameLobbyService {
         }
     }
 
-    public GameLobby createGameLobby(Guest admin) {
-        Player adminPlayer = new Player();
-        adminPlayer.setName(admin.getGuestname());
-        adminPlayer.setId(admin.getId());
+    public GameLobby createGameLobby(Player admin) {
+        GamePlayer adminGamePlayer = new GamePlayer();
+        adminGamePlayer.setName(admin.getGuestname());
+        adminGamePlayer.setId(admin.getId());
         GameLobby gamelobby = new GameLobby();
-        gamelobby.setAdmin(adminPlayer.getId());
-        gamelobby.addPlayer(adminPlayer);
+        gamelobby.setAdmin(adminGamePlayer.getId());
+        gamelobby.addPlayer(adminGamePlayer);
         gamelobby = gamelobbyRepository.save(gamelobby);
         gamelobbyRepository.flush();
 
@@ -49,11 +49,11 @@ public class GameLobbyService {
         return gamelobby;
     }
     
-    public GameLobby addPlayer(Guest guest, GameLobby lobby) {
-        Player player = new Player();
-        player.setName(guest.getGuestname());
-        player.setId(guest.getId());
-        lobby.addPlayer(player);
+    public GameLobby addPlayer(Player player, GameLobby lobby) {
+        GamePlayer gamePlayer = new GamePlayer();
+        gamePlayer.setName(player.getGuestname());
+        gamePlayer.setId(player.getId());
+        lobby.addPlayer(gamePlayer);
         gamelobbyRepository.save(lobby);
         gamelobbyRepository.flush();
         return lobby;
@@ -66,12 +66,12 @@ public class GameLobbyService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
-    public GameLobby removePlayer(Guest guest, GameLobby lobby)  {
-        Player player = new Player();
-        player.setName(guest.getGuestname());
-        player.setId(guest.getId());
-        lobby.removePlayer(player);
-        if (player.getId() == lobby.getAdmin()) {
+    public GameLobby removePlayer(Player player, GameLobby lobby)  {
+        GamePlayer gamePlayer = new GamePlayer();
+        gamePlayer.setName(player.getGuestname());
+        gamePlayer.setId(player.getId());
+        lobby.removePlayer(gamePlayer);
+        if (gamePlayer.getId() == lobby.getAdmin()) {
             gamelobbyRepository.delete(lobby);
             gamelobbyRepository.flush();
             return null;
@@ -80,6 +80,4 @@ public class GameLobbyService {
         gamelobbyRepository.flush();
         return lobby;
     }
-
-        
 }

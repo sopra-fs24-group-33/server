@@ -1,7 +1,7 @@
 package ch.uzh.ifi.hase.soprafs24.controller;
-import ch.uzh.ifi.hase.soprafs24.entity.*;
+import ch.uzh.ifi.hase.soprafs24.entity.Player;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.*;
-import ch.uzh.ifi.hase.soprafs24.service.GuestService;
+import ch.uzh.ifi.hase.soprafs24.service.PlayerService;
 import org.springframework.web.bind.annotation.PathVariable;
 import ch.uzh.ifi.hase.soprafs24.entity.GameLobby;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.GameLobbyGetDTO;
@@ -10,17 +10,15 @@ import ch.uzh.ifi.hase.soprafs24.service.GameLobbyService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
 @RestController
 public class GameLobbyController {
 
     private final GameLobbyService gamelobbyService;
-    private final GuestService guestService;
+    private final PlayerService playerService;
 
-    GameLobbyController(GameLobbyService gamelobbyService, GuestService guestService) {
+    GameLobbyController(GameLobbyService gamelobbyService, PlayerService playerService) {
         this.gamelobbyService = gamelobbyService;
-        this.guestService = guestService;
+        this.playerService = playerService;
     }
 
     @GetMapping("/gamelobbys/{id}")
@@ -34,8 +32,8 @@ public class GameLobbyController {
     @PostMapping("/gamelobbys")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public GameLobbyGetDTO createGameLobby(@RequestBody GuestPostDTO guestPostDTO) {
-        Guest admin = DTOMapper.INSTANCE.convertGuestPostDTOtoEntity(guestPostDTO);
+    public GameLobbyGetDTO createGameLobby(@RequestBody PlayerPostDTO playerPostDTO) {
+        Player admin = DTOMapper.INSTANCE.convertPlayerPostDTOtoEntity(playerPostDTO);
         GameLobby createdGameLobby = gamelobbyService.createGameLobby(admin);
         return DTOMapper.INSTANCE.convertEntityToGameLobbyGetDTO(createdGameLobby);
     }
@@ -43,8 +41,8 @@ public class GameLobbyController {
     @PostMapping("/gamelobbys/{id}")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public GameLobbyGetDTO addPlayer(@PathVariable Long id, @RequestBody GuestPostDTO guestPostDTO) {
-        Guest player = DTOMapper.INSTANCE.convertGuestPostDTOtoEntity(guestPostDTO);
+    public GameLobbyGetDTO addPlayer(@PathVariable Long id, @RequestBody PlayerPostDTO playerPostDTO) {
+        Player player = DTOMapper.INSTANCE.convertPlayerPostDTOtoEntity(playerPostDTO);
         GameLobby lobby = gamelobbyService.getLobby(id);
         GameLobby createdGameLobby = gamelobbyService.addPlayer(player, lobby);
         return DTOMapper.INSTANCE.convertEntityToGameLobbyGetDTO(createdGameLobby);
@@ -52,8 +50,8 @@ public class GameLobbyController {
     @PutMapping("/gamelobbys/{id}")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public GameLobbyGetDTO removePlayer(@PathVariable Long id, @RequestBody GuestPostDTO guestPostDTO) {
-        Guest player = DTOMapper.INSTANCE.convertGuestPostDTOtoEntity(guestPostDTO);
+    public GameLobbyGetDTO removePlayer(@PathVariable Long id, @RequestBody PlayerPostDTO playerPostDTO) {
+        Player player = DTOMapper.INSTANCE.convertPlayerPostDTOtoEntity(playerPostDTO);
         GameLobby lobby = gamelobbyService.getLobby(id);
         lobby = gamelobbyService.removePlayer(player, lobby);
         return DTOMapper.INSTANCE.convertEntityToGameLobbyGetDTO(lobby);

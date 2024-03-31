@@ -1,7 +1,7 @@
 package ch.uzh.ifi.hase.soprafs24.controller;
-import ch.uzh.ifi.hase.soprafs24.entity.Guest;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.GuestGetDTO;
-import ch.uzh.ifi.hase.soprafs24.service.GuestService;
+import ch.uzh.ifi.hase.soprafs24.entity.Player;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.PlayerGetDTO;
+import ch.uzh.ifi.hase.soprafs24.service.PlayerService;
 import org.springframework.web.bind.annotation.PathVariable;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserGetDTO;
@@ -25,10 +25,10 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final GuestService guestService;
+    private final PlayerService playerService;
 
-    UserController(UserService userService, GuestService guestService) {
-        this.userService = userService; this.guestService = guestService;
+    UserController(UserService userService, PlayerService playerService) {
+        this.userService = userService; this.playerService = playerService;
     }
 
     @GetMapping("/users")
@@ -64,17 +64,19 @@ public class UserController {
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public UserGetDTO createUser(@RequestBody UserPostDTO userPostDTO) {
+    public PlayerGetDTO createUser(@RequestBody UserPostDTO userPostDTO) {
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
         User createdUser = userService.createUser(userInput);
-        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
+        Player newPlayer = playerService.loginUser(createdUser);
+        return DTOMapper.INSTANCE.convertEntityToPlayerGetDTO(newPlayer);
     }
 
-    @PostMapping("/users/{id}")
+    @PostMapping("/login")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public GuestGetDTO loginUser(@PathVariable Long id)  {
-        Guest logged_in_guest = guestService.loginUser(id);
-        return DTOMapper.INSTANCE.convertEntityToGuestGetDTO(logged_in_guest);
+    public PlayerGetDTO loginUser(@RequestBody UserPostDTO userPostDTO)  {
+        User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+        Player logged_in_player = playerService.loginUser(userInput);
+        return DTOMapper.INSTANCE.convertEntityToPlayerGetDTO(logged_in_player);
     }
 }

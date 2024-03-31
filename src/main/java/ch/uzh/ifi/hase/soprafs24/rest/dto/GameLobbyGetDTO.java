@@ -1,11 +1,8 @@
 package ch.uzh.ifi.hase.soprafs24.rest.dto;
 
 import ch.uzh.ifi.hase.soprafs24.entity.Game;
-import ch.uzh.ifi.hase.soprafs24.entity.GameLobby;
-import ch.uzh.ifi.hase.soprafs24.entity.Player;
+import ch.uzh.ifi.hase.soprafs24.entity.GamePlayer;
 
-import javax.persistence.*;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +13,7 @@ public class GameLobbyGetDTO {
 
         private String pin;
 
-        private List<Player> players = new ArrayList<>();
+        private List<GamePlayer> gamePlayers = new ArrayList<>();
 
         private Game gamestatus;
 
@@ -44,12 +41,12 @@ public class GameLobbyGetDTO {
             this.pin = pin;
         }
 
-    public List<Player> getPlayers() {
-        return players;
+    public List<GamePlayer> getPlayers() {
+        return gamePlayers;
     }
 
-    public void setPlayers(List<Player> players) {
-        this.players = players;
+    public void setPlayers(List<GamePlayer> gamePlayers) {
+        this.gamePlayers = gamePlayers;
     }
 
     public Game getGamestatus() {

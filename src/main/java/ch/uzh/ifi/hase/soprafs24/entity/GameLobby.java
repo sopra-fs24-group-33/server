@@ -25,16 +25,16 @@ public class GameLobby implements Serializable {
     private Game gamestatus;
 
     @OneToMany(mappedBy = "gameLobby", cascade = CascadeType.ALL)
-    private List<Player> players = new ArrayList<>();
+    private List<GamePlayer> gamePlayers = new ArrayList<>();
 
-    public void addPlayer(Player player) {
-        players.add(player);
-        player.setGameLobby(this);
+    public void addPlayer(GamePlayer gamePlayer) {
+        gamePlayers.add(gamePlayer);
+        gamePlayer.setGameLobby(this);
     }
 
-    public void removePlayer(Player player) {
-        players.remove(player);
-        player.setGameLobby(null);
+    public void removePlayer(GamePlayer gamePlayer) {
+        gamePlayers.remove(gamePlayer);
+        gamePlayer.setGameLobby(null);
     }
 
     public Long getId() {
@@ -69,11 +69,11 @@ public class GameLobby implements Serializable {
         this.gamestatus = gamestatus;
     }
 
-    public List<Player> getPlayers() {
-        return players;
+    public List<GamePlayer> getPlayers() {
+        return gamePlayers;
     }
 
-    public void setPlayers(List<Player> players) {
-        this.players = players;
+    public void setPlayers(List<GamePlayer> gamePlayers) {
+        this.gamePlayers = gamePlayers;
     }
 }

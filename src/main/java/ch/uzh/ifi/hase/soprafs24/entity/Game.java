@@ -20,7 +20,7 @@ public class Game implements Serializable {
     @Column(name = "array_element")
     private List<Integer> cardStack;
     @OneToMany(mappedBy = "game", cascade = CascadeType.ALL)
-    private List<Player> players = new ArrayList<>();
+    private List<GamePlayer> gamePlayers = new ArrayList<>();
     @Column
     private Integer currentCard;
 
@@ -60,19 +60,19 @@ public class Game implements Serializable {
 
     public List<Integer> getPlayingCards() {
         List<Integer> playingCards = new ArrayList<>();
-        for (Integer i=0; i < this.players.size(); i++) {
-            playingCards.addAll(this.players.get(i).getCards());
+        for (Integer i = 0; i < this.gamePlayers.size(); i++) {
+            playingCards.addAll(this.gamePlayers.get(i).getCards());
         }
         return playingCards;
     }
 
     public void deleteCardFromPlayer() {
-        for (Integer i=0; i < this.players.size(); i++) {
-            for (Integer j=0; j < this.players.get(i).getCards().size(); j++) {
-                if (this.players.get(i).getCards().get(j) == this.currentCard) {
-                    List<Integer> myCards =this.players.get(i).getCards();
+        for (Integer i = 0; i < this.gamePlayers.size(); i++) {
+            for (Integer j = 0; j < this.gamePlayers.get(i).getCards().size(); j++) {
+                if (this.gamePlayers.get(i).getCards().get(j) == this.currentCard) {
+                    List<Integer> myCards =this.gamePlayers.get(i).getCards();
                     myCards.remove(j);
-                    this.players.get(i).setCards(myCards);
+                    this.gamePlayers.get(i).setCards(myCards);
                     break;
                 }
             }
@@ -95,10 +95,10 @@ public class Game implements Serializable {
     }
 
     public void distributeCards() {
-        if (this.cardStack.size() >= this.level*this.players.size()) {
+        if (this.cardStack.size() >= this.level*this.gamePlayers.size()) {
             List<Integer> indices = new ArrayList<>();
             List<Integer> randoms = new ArrayList<>();
-            for (Integer i=0; i<this.players.size(); i++){
+            for (Integer i = 0; i<this.gamePlayers.size(); i++){
                 Integer k = 0;
                 while (indices.size() < this.level) {
                     Random rand = new Random();
@@ -109,7 +109,7 @@ public class Game implements Serializable {
                         k++;
                     }
                 }
-                this.players.get(i).setCards(randoms);
+                this.gamePlayers.get(i).setCards(randoms);
                 List<Integer> newStack = new ArrayList<>(this.cardStack);
                 for (Integer x=0; x<this.level; x++) {
                     newStack.remove(indices.get(x));
@@ -148,12 +148,12 @@ public class Game implements Serializable {
         this.successfulMove = move;
     }
 
-    public List<Player> getPlayers() {
-        return this.players;
+    public List<GamePlayer> getPlayers() {
+        return this.gamePlayers;
     }
 
-    public void setPlayers(List<Player> playerz) {
-        this.players = playerz;
+    public void setPlayers(List<GamePlayer> playerz) {
+        this.gamePlayers = playerz;
     }
 
     public Integer getLevel() {
