@@ -19,7 +19,7 @@ public class GameLobby implements Serializable {
     private Long admin;
 
     @Column
-    private String pin;
+    private int pin;
 
     @OneToOne
     private Game gamestatus;
@@ -53,11 +53,11 @@ public class GameLobby implements Serializable {
         this.admin = admin;
     }
 
-    public String getPin() {
+    public int getPin() {
         return pin;
     }
 
-    public void setPin(String pin) {
+    public void setPin(int pin) {
         this.pin = pin;
     }
 

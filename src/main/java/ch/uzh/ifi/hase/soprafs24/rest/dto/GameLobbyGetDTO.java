@@ -11,7 +11,7 @@ public class GameLobbyGetDTO {
 
         private Long admin;
 
-        private String pin;
+        private int pin;
 
         private List<GamePlayer> gamePlayers = new ArrayList<>();
 
@@ -33,11 +33,11 @@ public class GameLobbyGetDTO {
             this.admin = admin;
         }
 
-        public String getPin() {
+        public int getPin() {
             return pin;
         }
 
-        public void setPin(String pin) {
+        public void setPin(int pin) {
             this.pin = pin;
         }
 

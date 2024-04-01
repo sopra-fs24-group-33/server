@@ -86,7 +86,7 @@ public class UserService {
         return newUser;
     }
 
-    /**
+    /**getuserby
      * This is a helper method that will check the uniqueness criteria of the
      * username and the name
      * defined in the User entity. The method will do nothing if the input is unique

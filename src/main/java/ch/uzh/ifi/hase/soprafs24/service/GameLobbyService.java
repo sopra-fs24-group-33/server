@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 @Transactional
@@ -20,18 +21,20 @@ public class GameLobbyService {
 
     private final GameLobbyRepository gamelobbyRepository;
 
+		private final Random random = new Random();
+
     @Autowired
     public GameLobbyService(@Qualifier("gamelobbyRepository") GameLobbyRepository gamelobbyRepository) {
         this.gamelobbyRepository = gamelobbyRepository;
     }
 
-    public GameLobby getGameLobby(Long gamelobbyId) {
-        Optional<GameLobby> optionalGameLobby = gamelobbyRepository.findById(gamelobbyId);
-        if (optionalGameLobby.isPresent()) {
-            return optionalGameLobby.get();
+    public GameLobby getGameLobby(int gamePin) {
+        GameLobby optionalGameLobby = gamelobbyRepository.findByPin(gamePin);
+        if (optionalGameLobby != null) {
+            return optionalGameLobby;
         }
         else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "GameLobby not found with ID: " + gamelobbyId);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "GameLobby not found with Pin: " + gamePin);
         }
     }
 
@@ -40,9 +43,10 @@ public class GameLobbyService {
         adminGamePlayer.setName(admin.getGuestname());
         adminGamePlayer.setId(admin.getId());
         GameLobby gamelobby = new GameLobby();
+				gamelobby.setPin(generatePin());
         gamelobby.setAdmin(adminGamePlayer.getId());
         gamelobby.addPlayer(adminGamePlayer);
-        gamelobby = gamelobbyRepository.save(gamelobby);
+        gamelobbyRepository.save(gamelobby);
         gamelobbyRepository.flush();
 
         log.debug("Created Information for GameLobby: {}", gamelobby);
@@ -80,4 +84,13 @@ public class GameLobbyService {
         gamelobbyRepository.flush();
         return lobby;
     }
+		private int generatePin() {
+			int pin;
+
+			do {
+				pin = 100000 + random.nextInt(900000);
+			} while (gamelobbyRepository.findByPin(pin) != null);
+
+			return pin;
+		}
 }

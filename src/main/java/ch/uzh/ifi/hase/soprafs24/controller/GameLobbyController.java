@@ -21,11 +21,11 @@ public class GameLobbyController {
         this.playerService = playerService;
     }
 
-    @GetMapping("/gamelobbys/{id}")
+    @GetMapping("/gamelobbys/{gamePin}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public GameLobbyGetDTO getGameLobby(@PathVariable Long id) {
-        GameLobby gamelobby = gamelobbyService.getGameLobby(id);
+    public GameLobbyGetDTO getGameLobby(@PathVariable int gamePin) {
+        GameLobby gamelobby = gamelobbyService.getGameLobby(gamePin);
         return DTOMapper.INSTANCE.convertEntityToGameLobbyGetDTO(gamelobby);
     }
 
@@ -38,21 +38,21 @@ public class GameLobbyController {
         return DTOMapper.INSTANCE.convertEntityToGameLobbyGetDTO(createdGameLobby);
     }
 
-    @PostMapping("/gamelobbys/{id}")
+    @PostMapping("/gamelobbys/{gamePin}")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public GameLobbyGetDTO addPlayer(@PathVariable Long id, @RequestBody PlayerPostDTO playerPostDTO) {
+    public GameLobbyGetDTO addPlayer(@PathVariable int gamePin, @RequestBody PlayerPostDTO playerPostDTO) {
         Player player = DTOMapper.INSTANCE.convertPlayerPostDTOtoEntity(playerPostDTO);
-        GameLobby lobby = gamelobbyService.getLobby(id);
+        GameLobby lobby = gamelobbyService.getGameLobby(gamePin);
         GameLobby createdGameLobby = gamelobbyService.addPlayer(player, lobby);
         return DTOMapper.INSTANCE.convertEntityToGameLobbyGetDTO(createdGameLobby);
     }
-    @PutMapping("/gamelobbys/{id}")
+    @PutMapping("/gamelobbys/{gamePin}")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public GameLobbyGetDTO removePlayer(@PathVariable Long id, @RequestBody PlayerPostDTO playerPostDTO) {
+    public GameLobbyGetDTO removePlayer(@PathVariable int gamePin, @RequestBody PlayerPostDTO playerPostDTO) {
         Player player = DTOMapper.INSTANCE.convertPlayerPostDTOtoEntity(playerPostDTO);
-        GameLobby lobby = gamelobbyService.getLobby(id);
+        GameLobby lobby = gamelobbyService.getGameLobby(gamePin);
         lobby = gamelobbyService.removePlayer(player, lobby);
         return DTOMapper.INSTANCE.convertEntityToGameLobbyGetDTO(lobby);
     }
