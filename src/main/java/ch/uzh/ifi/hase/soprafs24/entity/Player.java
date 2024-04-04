@@ -9,31 +9,29 @@ public class Player extends SuperUser {
     public Player(User user) {
         this.setStatus(user.getStatus());
         this.setToken(user.getToken());
-        this.setGuestname(user.getUsername());
+        this.setName(user.getUsername());
         this.setIsUser(user.getId());
         this.setShame_tokens(user.getShame_tokens());
     }
     public Player()  {
         super();
         this.setIsUser(null);
-        this.setGuestname("guest");
+        this.setName("guest");
         this.setShame_tokens(0);
     }
-
-    //hallo
     @Column
-    String guestname;
+    String name;
 
     @Column
     int shame_tokens;
 
     @Column
     Long isUser;
-    public String getGuestname() {
-        return guestname;
+    public String getName() {
+        return name;
     }
-    public void setGuestname(String guestname) {
-        this.guestname = guestname;
+    public void setName(String guestname) {
+        this.name = guestname;
     }
     public int getShame_tokens() {
         return shame_tokens;

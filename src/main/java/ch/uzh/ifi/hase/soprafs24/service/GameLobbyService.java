@@ -40,7 +40,7 @@ public class GameLobbyService {
 
     public GameLobby createGameLobby(Player admin) {
         GamePlayer adminGamePlayer = new GamePlayer();
-        adminGamePlayer.setName(admin.getGuestname());
+        adminGamePlayer.setName(admin.getName());
         adminGamePlayer.setId(admin.getId());
         GameLobby gamelobby = new GameLobby();
 				gamelobby.setPin(generatePin());
@@ -55,27 +55,17 @@ public class GameLobbyService {
     
     public GameLobby addPlayer(Player player, GameLobby lobby) {
         GamePlayer gamePlayer = new GamePlayer();
-        gamePlayer.setName(player.getGuestname());
+        gamePlayer.setName(player.getName());
         gamePlayer.setId(player.getId());
         lobby.addPlayer(gamePlayer);
         gamelobbyRepository.save(lobby);
         gamelobbyRepository.flush();
         return lobby;
     }
-    public GameLobby getLobby(Long id)  {
-        Optional<GameLobby> optionalGameLobby = gamelobbyRepository.findById(id);
-        if (optionalGameLobby.isPresent()) {
-            return optionalGameLobby.get();
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-    }
     public GameLobby removePlayer(Player player, GameLobby lobby)  {
-        GamePlayer gamePlayer = new GamePlayer();
-        gamePlayer.setName(player.getGuestname());
-        gamePlayer.setId(player.getId());
-        lobby.removePlayer(gamePlayer);
-        if (gamePlayer.getId() == lobby.getAdmin()) {
+        Long id = player.getId();
+        lobby.removePlayer(id);
+        if (id == lobby.getAdmin()) {
             gamelobbyRepository.delete(lobby);
             gamelobbyRepository.flush();
             return null;

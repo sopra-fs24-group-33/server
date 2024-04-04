@@ -11,14 +11,10 @@ public class GameLobby implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue
-    private Long id;
-
     @Column
     private Long admin;
 
-    @Column
+    @Id
     private int pin;
 
     @OneToOne
@@ -32,18 +28,16 @@ public class GameLobby implements Serializable {
         gamePlayer.setGameLobby(this);
     }
 
-    public void removePlayer(GamePlayer gamePlayer) {
-        gamePlayers.remove(gamePlayer);
-        gamePlayer.setGameLobby(null);
+    public void removePlayer(Long id) {
+        for (GamePlayer player : this.getPlayers())  {
+            if (player.getId() == id)   {
+                gamePlayers.remove(player);
+                player.setGameLobby(null);
+                break;
+            }
+        }
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Long getAdmin() {
         return admin;

@@ -25,7 +25,7 @@ public class PlayerController {
         this.playerService = playerService;
     }
 
-    @GetMapping("/guests")
+    @GetMapping("/players")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<PlayerGetDTO> getAllPlayers() {
@@ -37,7 +37,7 @@ public class PlayerController {
         return playerGetDTOS;
     }
 
-    @GetMapping("/guests/{id}")
+    @GetMapping("/players/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public PlayerGetDTO getPlayer(@PathVariable Long id) {
@@ -45,14 +45,14 @@ public class PlayerController {
         return DTOMapper.INSTANCE.convertEntityToPlayerGetDTO(player);
     }
 
-    @PostMapping("/guests")
+    @PostMapping("/players")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public PlayerGetDTO createPlayer() {
         ch.uzh.ifi.hase.soprafs24.entity.Player player = playerService.loginPlayer();
         return DTOMapper.INSTANCE.convertEntityToPlayerGetDTO(player);
     }
-    @DeleteMapping("/guests/{id}")
+    @DeleteMapping("/players/{id}")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public PlayerGetDTO logoutUser(@PathVariable Long id)  {

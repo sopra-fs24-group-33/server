@@ -8,8 +8,6 @@ import java.util.List;
 
 public class GameLobbyPostDTO {
 
-    private Long id;
-
     private Long admin;
 
     private int pin;
@@ -17,14 +15,6 @@ public class GameLobbyPostDTO {
     private List<GamePlayer> gamePlayers = new ArrayList<>();
 
     private Game gamestatus;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Long getAdmin() {
         return admin;

@@ -4,16 +4,16 @@ import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 
 public class PlayerGetDTO {
     private Long id;
-    private String guestname;
+    private String name;
     private int shame_tokens;
     private String token;
     private UserStatus status;
     private Long isUser;
-    public String getGuestname() {
-        return guestname;
+    public String getName() {
+        return name;
     }
-    public void setGuestname(String guestname) {
-        this.guestname = guestname;
+    public void setName(String name) {
+        this.name = name;
     }
     public int getShame_tokens() {
         return shame_tokens;

@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameLobbyGetDTO {
-        private Long id;
-
         private Long admin;
 
         private int pin;
@@ -17,13 +15,6 @@ public class GameLobbyGetDTO {
 
         private Game gamestatus;
 
-        public Long getId() {
-            return id;
-        }
-
-        public void setId(Long id) {
-            this.id = id;
-        }
 
         public Long getAdmin() {
             return admin;

@@ -21,7 +21,7 @@ public class GameLobbyController {
         this.playerService = playerService;
     }
 
-    @GetMapping("/gamelobbys/{gamePin}")
+    @GetMapping("/gamelobbies/{gamePin}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public GameLobbyGetDTO getGameLobby(@PathVariable int gamePin) {
@@ -29,7 +29,7 @@ public class GameLobbyController {
         return DTOMapper.INSTANCE.convertEntityToGameLobbyGetDTO(gamelobby);
     }
 
-    @PostMapping("/gamelobbys")
+    @PostMapping("/gamelobbies")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public GameLobbyGetDTO createGameLobby(@RequestBody PlayerPostDTO playerPostDTO) {
@@ -38,7 +38,7 @@ public class GameLobbyController {
         return DTOMapper.INSTANCE.convertEntityToGameLobbyGetDTO(createdGameLobby);
     }
 
-    @PostMapping("/gamelobbys/{gamePin}")
+    @PostMapping("/gamelobbies/{gamePin}")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public GameLobbyGetDTO addPlayer(@PathVariable int gamePin, @RequestBody PlayerPostDTO playerPostDTO) {
@@ -47,7 +47,7 @@ public class GameLobbyController {
         GameLobby createdGameLobby = gamelobbyService.addPlayer(player, lobby);
         return DTOMapper.INSTANCE.convertEntityToGameLobbyGetDTO(createdGameLobby);
     }
-    @PutMapping("/gamelobbys/{gamePin}")
+    @PutMapping("/gamelobbies/{gamePin}")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public GameLobbyGetDTO removePlayer(@PathVariable int gamePin, @RequestBody PlayerPostDTO playerPostDTO) {
