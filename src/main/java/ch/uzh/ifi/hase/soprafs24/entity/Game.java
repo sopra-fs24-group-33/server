@@ -92,6 +92,18 @@ public class Game {
     }
   }
 
+  private void distributeShameToken() {
+    for (Integer i=0; i < this.players.size(); i++) {
+      List<Integer> myCards = this.players.get(i).getCards();
+      for (Integer j=0; j < myCards.size(); j++) {
+        if (myCards.get(j) == this.currentCard) {
+          Integer current = this.players.get(i).getCurrentShameTokens();
+          this.players.get(i).setCurrentShameTokens(current +1);
+        }
+      }
+    }
+  }
+
   private void doMove() {
     List<Integer> playingCards = this.getPlayingCards();
     Integer minimum = Collections.min(playingCards);
@@ -103,6 +115,7 @@ public class Game {
             this.distributeCards();
         }
     } else {
+        this.distributeShameToken();
         this.setSuccessfulMove(2);
     }
   }
