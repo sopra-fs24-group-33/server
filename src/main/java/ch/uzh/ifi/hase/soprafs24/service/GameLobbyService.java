@@ -74,13 +74,23 @@ public class GameLobbyService {
         gamelobbyRepository.flush();
         return lobby;
     }
-		private int generatePin() {
-			int pin;
 
-			do {
-				pin = 100000 + random.nextInt(900000);
-			} while (gamelobbyRepository.findByPin(pin) != null);
+    public GameLobby startGame(GameLobby lobby)  {
+        lobby.setGamestatus(lobby.startGame());
+        return lobby;
+    }
 
-			return pin;
-		}
+    public GameLobby updateGamestatus(GameLobby lobby, Integer playedCard)   {
+        lobby.setGamestatus(lobby.getGamestatus().updateGamestatus(playedCard));
+        return lobby;
+    }
+    private int generatePin() {
+        int pin;
+
+        do {
+            pin = 100000 + random.nextInt(900000);
+        } while (gamelobbyRepository.findByPin(pin) != null);
+
+        return pin;
+    }
 }

@@ -38,6 +38,15 @@ public class GameLobby implements Serializable {
         }
     }
 
+    public Game startGame() {
+        this.gamestatus.setPlayers(this.getPlayers());
+        this.gamestatus.setLevel(1);
+        this.gamestatus.setSuccessfulMove(0);
+        this.gamestatus.setCurrentCard(0);
+        this.gamestatus.updateGamestatus(this.gamestatus.getCurrentCard());
+        return gamestatus;
+    }
+
 
     public Long getAdmin() {
         return admin;

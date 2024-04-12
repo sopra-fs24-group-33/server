@@ -1,4 +1,6 @@
 package ch.uzh.ifi.hase.soprafs24.controller;
+import ch.uzh.ifi.hase.soprafs24.entity.Game;
+import ch.uzh.ifi.hase.soprafs24.entity.PlayedCard;
 import ch.uzh.ifi.hase.soprafs24.entity.Player;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.*;
 import ch.uzh.ifi.hase.soprafs24.service.PlayerService;
@@ -38,6 +40,15 @@ public class GameLobbyController {
         return DTOMapper.INSTANCE.convertEntityToGameLobbyGetDTO(createdGameLobby);
     }
 
+    @PostMapping("/startgame")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    public GameLobbyGetDTO createGameLobby(@RequestBody GameLobbyPostDTO lobbyPostDTO) {
+        GameLobby lobby = DTOMapper.INSTANCE.convertGameLobbyPostDTOtoEntity(lobbyPostDTO);
+        lobby = gamelobbyService.startGame(lobby);
+        return DTOMapper.INSTANCE.convertEntityToGameLobbyGetDTO(lobby);
+    }
+
     @PostMapping("/gamelobbies/{gamePin}")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
@@ -50,10 +61,20 @@ public class GameLobbyController {
     @PutMapping("/gamelobbies/{gamePin}")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public GameLobbyGetDTO removePlayer(@PathVariable int gamePin, @RequestBody PlayerPostDTO playerPostDTO) {
+    public GameLobbyGetDTO removePlayer(@PathVariable Integer gamePin, @RequestBody PlayerPostDTO playerPostDTO) {
         Player player = DTOMapper.INSTANCE.convertPlayerPostDTOtoEntity(playerPostDTO);
         GameLobby lobby = gamelobbyService.getGameLobby(gamePin);
         lobby = gamelobbyService.removePlayer(player, lobby);
         return DTOMapper.INSTANCE.convertEntityToGameLobbyGetDTO(lobby);
+    }
+
+    @PutMapping("/move/{gamePin}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public GameLobbyGetDTO playCard(@PathVariable Integer gamePin, @RequestBody PlayedCardPostDTO playedCardPostDTO) {
+        PlayedCard playedCard = DTOMapper.INSTANCE.convertPlayedCardPostDTOtoEntity(playedCardPostDTO);
+        GameLobby lobby = gamelobbyService.getGameLobby(gamePin);
+        GameLobby updatedLobby = gamelobbyService.updateGamestatus(lobby, playedCard.getCard());
+        return DTOMapper.INSTANCE.convertEntityToGameLobbyGetDTO(updatedLobby);
     }
 }
