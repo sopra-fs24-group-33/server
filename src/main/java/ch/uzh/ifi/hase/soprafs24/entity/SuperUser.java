@@ -27,8 +27,6 @@ public abstract class SuperUser implements Serializable {
   @Column(nullable = false, unique = true)
   private String token;
 
-  @Column(nullable = false)
-  private UserStatus status;
 
   public Long getId() {
     return id;
@@ -46,12 +44,5 @@ public abstract class SuperUser implements Serializable {
     this.token = token;
   }
 
-  public UserStatus getStatus() {
-    return status;
-  }
-
-  public void setStatus(UserStatus status) {
-    this.status = status;
-  }
 
 }

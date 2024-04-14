@@ -40,12 +40,11 @@ public class GameLobbyController {
         return DTOMapper.INSTANCE.convertEntityToGameLobbyGetDTO(createdGameLobby);
     }
 
-    @PostMapping("/startgame")
+    @PostMapping("/startgame/{gamePin}")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public GameLobbyGetDTO createGameLobby(@RequestBody GameLobbyPostDTO lobbyPostDTO) {
-        GameLobby lobby = DTOMapper.INSTANCE.convertGameLobbyPostDTOtoEntity(lobbyPostDTO);
-        lobby = gamelobbyService.startGame(lobby);
+    public GameLobbyGetDTO createGameLobby(@PathVariable int gamePin) {
+        GameLobby lobby = gamelobbyService.startGame(gamePin);
         return DTOMapper.INSTANCE.convertEntityToGameLobbyGetDTO(lobby);
     }
 

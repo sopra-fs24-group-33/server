@@ -7,7 +7,6 @@ public class PlayerGetDTO {
     private String name;
     private int shame_tokens;
     private String token;
-    private UserStatus status;
     private Long isUser;
     public String getName() {
         return name;
@@ -32,12 +31,6 @@ public class PlayerGetDTO {
     }
     public String getToken()    {
         return token;
-    }
-    public UserStatus getStatus() {
-        return status;
-    }
-    public void setStatus(UserStatus status) {
-        this.status = status;
     }
 
     public Long getIsUser() {

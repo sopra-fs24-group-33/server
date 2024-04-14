@@ -7,6 +7,8 @@ public class User extends SuperUser {
     @Column(nullable = false, unique = true)
     String username;
     @Column(nullable = false)
+    private UserStatus status;
+    @Column(nullable = false)
     int gamesPlayed;
     @Column(nullable = false)
     int shame_tokens;
@@ -63,12 +65,13 @@ public class User extends SuperUser {
     }
 
     public UserStatus getStatus() {
-        return super.getStatus();
+        return status;
     }
 
     public void setStatus(UserStatus status) {
-        super.setStatus(status);
+        this.status = status;
     }
+
     public int getCurrent_shame_tokens() {
         return current_shame_tokens;
     }

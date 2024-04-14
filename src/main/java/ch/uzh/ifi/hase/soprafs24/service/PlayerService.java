@@ -71,7 +71,6 @@ public class PlayerService {
     public Player loginPlayer()   {
         Player player = new Player();
         player.setToken(UUID.randomUUID().toString());
-        player.setStatus(UserStatus.OFFLINE);
         playerRepository.save(player);
         playerRepository.flush();
         return player;
@@ -93,7 +92,6 @@ public class PlayerService {
 
     public Player createPlayer(Player newPlayer) {
         newPlayer.setToken(UUID.randomUUID().toString());
-        newPlayer.setStatus(UserStatus.OFFLINE);
         // saves the given entity but data is only persisted in the database once
         // flush() is called
         newPlayer = playerRepository.save(newPlayer);

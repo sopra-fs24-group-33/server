@@ -7,7 +7,6 @@ import javax.persistence.*;
 @Entity
 public class Player extends SuperUser {
     public Player(User user) {
-        this.setStatus(user.getStatus());
         this.setToken(user.getToken());
         this.setName(user.getUsername());
         this.setIsUser(user.getId());
@@ -50,12 +49,6 @@ public class Player extends SuperUser {
     }
     public String getToken()    {
         return super.getToken();
-    }
-    public UserStatus getStatus() {
-        return super.getStatus();
-    }
-    public void setStatus(UserStatus status) {
-        super.setStatus(status);
     }
 
     public Long getIsUser() {

@@ -75,7 +75,8 @@ public class GameLobbyService {
         return lobby;
     }
 
-    public GameLobby startGame(GameLobby lobby)  {
+    public GameLobby startGame(int gamePin)  {
+        GameLobby lobby = getGameLobby(gamePin);
         lobby.setGamestatus(lobby.startGame());
         return lobby;
     }
