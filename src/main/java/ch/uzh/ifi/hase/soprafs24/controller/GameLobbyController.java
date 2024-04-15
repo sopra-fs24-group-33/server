@@ -1,14 +1,11 @@
 package ch.uzh.ifi.hase.soprafs24.controller;
-import ch.uzh.ifi.hase.soprafs24.entity.Game;
-import ch.uzh.ifi.hase.soprafs24.entity.PlayedCard;
-import ch.uzh.ifi.hase.soprafs24.entity.Player;
+import ch.uzh.ifi.hase.soprafs24.entity.*;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.*;
-import ch.uzh.ifi.hase.soprafs24.service.PlayerService;
 import org.springframework.web.bind.annotation.PathVariable;
 import ch.uzh.ifi.hase.soprafs24.entity.GameLobby;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.GameLobbyGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
-import ch.uzh.ifi.hase.soprafs24.service.GameLobbyService;
+import ch.uzh.ifi.hase.soprafs24.service.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,11 +13,13 @@ import org.springframework.web.bind.annotation.*;
 public class GameLobbyController {
 
     private final GameLobbyService gamelobbyService;
+    private final GameService gameService;
     private final PlayerService playerService;
 
-    GameLobbyController(GameLobbyService gamelobbyService, PlayerService playerService) {
+    GameLobbyController(GameLobbyService gamelobbyService, PlayerService playerService, GameService gameService) {
         this.gamelobbyService = gamelobbyService;
         this.playerService = playerService;
+        this.gameService = gameService;
     }
 
     @GetMapping("/gamelobbies/{gamePin}")
@@ -43,9 +42,10 @@ public class GameLobbyController {
     @PostMapping("/startgame/{gamePin}")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public GameLobbyGetDTO createGameLobby(@PathVariable int gamePin) {
-        GameLobby lobby = gamelobbyService.startGame(gamePin);
-        return DTOMapper.INSTANCE.convertEntityToGameLobbyGetDTO(lobby);
+    public GameGetDTO createGame(@PathVariable int gamePin) {
+        GameLobby lobby = gamelobbyService.getGameLobby(gamePin);
+        Game game = gameService.startGame(lobby);
+        return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
     }
 
     @PostMapping("/gamelobbies/{gamePin}")
@@ -65,15 +65,5 @@ public class GameLobbyController {
         GameLobby lobby = gamelobbyService.getGameLobby(gamePin);
         lobby = gamelobbyService.removePlayer(player, lobby);
         return DTOMapper.INSTANCE.convertEntityToGameLobbyGetDTO(lobby);
-    }
-
-    @PutMapping("/move/{gamePin}")
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public GameLobbyGetDTO playCard(@PathVariable Integer gamePin, @RequestBody PlayedCardPostDTO playedCardPostDTO) {
-        PlayedCard playedCard = DTOMapper.INSTANCE.convertPlayedCardPostDTOtoEntity(playedCardPostDTO);
-        GameLobby lobby = gamelobbyService.getGameLobby(gamePin);
-        GameLobby updatedLobby = gamelobbyService.updateGamestatus(lobby, playedCard.getCard());
-        return DTOMapper.INSTANCE.convertEntityToGameLobbyGetDTO(updatedLobby);
     }
 }

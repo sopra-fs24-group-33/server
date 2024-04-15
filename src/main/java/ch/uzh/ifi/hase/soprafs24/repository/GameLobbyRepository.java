@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository("gamelobbyRepository")
-public interface GameLobbyRepository extends JpaRepository<GameLobby, Long> {
+public interface GameLobbyRepository extends JpaRepository<GameLobby, Integer> {
 	GameLobby findByPin(int	 pin);
 }

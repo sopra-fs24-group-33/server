@@ -17,8 +17,8 @@ public class GameLobby implements Serializable {
     @Id
     private int pin;
 
-    @OneToOne
-    private Game gamestatus;
+    @Column
+    private Long gameId;
 
     @OneToMany(mappedBy = "gameLobby", cascade = CascadeType.ALL)
     private List<GamePlayer> gamePlayers = new ArrayList<>();
@@ -38,14 +38,7 @@ public class GameLobby implements Serializable {
         }
     }
 
-    public Game startGame() {
-        this.gamestatus.setPlayers(this.getPlayers());
-        this.gamestatus.setLevel(1);
-        this.gamestatus.setSuccessfulMove(0);
-        this.gamestatus.setCurrentCard(0);
-        this.gamestatus.updateGamestatus(this.gamestatus.getCurrentCard());
-        return gamestatus;
-    }
+
 
 
     public Long getAdmin() {
@@ -62,14 +55,6 @@ public class GameLobby implements Serializable {
 
     public void setPin(int pin) {
         this.pin = pin;
-    }
-
-    public Game getGamestatus() {
-        return gamestatus;
-    }
-
-    public void setGamestatus(Game gamestatus) {
-        this.gamestatus = gamestatus;
     }
 
     public List<GamePlayer> getPlayers() {

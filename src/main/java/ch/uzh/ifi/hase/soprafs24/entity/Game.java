@@ -1,5 +1,7 @@
 package ch.uzh.ifi.hase.soprafs24.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.*;
@@ -8,6 +10,7 @@ import java.util.Random;
 
 
 @Entity
+@Table(name = "GAME")
 public class Game implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -15,6 +18,9 @@ public class Game implements Serializable {
     @Id
     @GeneratedValue
     private Long id;
+
+    @Column
+    private Long LobbyId;
 
     @ElementCollection
     @Column(name = "array_element")
@@ -40,6 +46,15 @@ public class Game implements Serializable {
             numbers.add(i);
         }
         return numbers;
+    }
+
+    public Game startGame(GameLobby lobby) {
+        this.setPlayers(lobby.getPlayers());
+        this.setLevel(1);
+        this.setSuccessfulMove(0);
+        this.setCurrentCard(0);
+        this.updateGamestatus(this.getCurrentCard());
+        return this;
     }
 
     private void doRound() {

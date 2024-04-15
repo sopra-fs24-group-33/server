@@ -21,7 +21,7 @@ public class GameLobbyService {
 
     private final GameLobbyRepository gamelobbyRepository;
 
-		private final Random random = new Random();
+    private final Random random = new Random();
 
     @Autowired
     public GameLobbyService(@Qualifier("gamelobbyRepository") GameLobbyRepository gamelobbyRepository) {
@@ -72,17 +72,6 @@ public class GameLobbyService {
         }
         gamelobbyRepository.save(lobby);
         gamelobbyRepository.flush();
-        return lobby;
-    }
-
-    public GameLobby startGame(int gamePin)  {
-        GameLobby lobby = getGameLobby(gamePin);
-        lobby.setGamestatus(lobby.startGame());
-        return lobby;
-    }
-
-    public GameLobby updateGamestatus(GameLobby lobby, Integer playedCard)   {
-        lobby.setGamestatus(lobby.getGamestatus().updateGamestatus(playedCard));
         return lobby;
     }
     private int generatePin() {

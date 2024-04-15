@@ -1,10 +1,10 @@
 package ch.uzh.ifi.hase.soprafs24.entity;
-
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.*;
 
 @Entity
-public class PlayedCard {
+public class PlayedCard implements Serializable {
     @Id
     private Integer card;
 

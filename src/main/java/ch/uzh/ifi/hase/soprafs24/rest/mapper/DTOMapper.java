@@ -34,8 +34,10 @@ public interface DTOMapper {
 
     GameLobbyGetDTO convertEntityToGameLobbyGetDTO(GameLobby gamelobby);
 
-    PlayedCard convertPlayedCardPostDTOtoEntity(PlayedCardPostDTO playedCard);
+    Game convertGamePostDTOtoEntity(GamePostDTO gamePostDTO);
 
-    PlayedCardGetDTO convertEntityToPlayedCardGetDTO(Integer playedCard);
+    GameGetDTO convertEntityToGameGetDTO(Game game);
+
+
 
 }

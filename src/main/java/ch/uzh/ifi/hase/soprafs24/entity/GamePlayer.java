@@ -1,6 +1,6 @@
 package ch.uzh.ifi.hase.soprafs24.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -22,16 +22,12 @@ public class GamePlayer implements Serializable {
     @ManyToOne
     @JsonIgnore
     private GameLobby gameLobby;
-
     @ManyToOne
+    @JsonIgnore
     private Game game;
-
     public List<Integer> getCards() {
         return cards;
     }
-
-
-
     public void setCards(List<Integer> cards) {
         this.cards = cards;
     }
