@@ -49,7 +49,11 @@ public class Game implements Serializable {
     }
 
     public Game startGame(GameLobby lobby) {
-        this.setPlayers(lobby.getPlayers());
+        List<GamePlayer> lobbyPlayers = lobby.getGamePlayers();
+        for (GamePlayer gamePlayer : lobbyPlayers) {
+            this.players.add(gamePlayer);
+            gamePlayer.setGame(this);
+        }
         this.setLevel(1);
         this.setSuccessfulMove(0);
         this.setCurrentCard(0);
@@ -60,7 +64,6 @@ public class Game implements Serializable {
     private void doRound() {
         if (this.currentCard == 0) {
             this.setCards(this.createStack());
-            System.out.println(this.getCards());
             this.distributeCards();
         } else if (this.successfulMove == 2) {
             if (this.getPlayingCards().size() != 0) {
@@ -195,6 +198,30 @@ public class Game implements Serializable {
 
     public void setLevel(Integer lev) {
         this.level = lev;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getLobbyId() {
+        return LobbyId;
+    }
+
+    public void setLobbyId(Long lobbyId) {
+        LobbyId = lobbyId;
+    }
+
+    public List<Integer> getCardStack() {
+        return cardStack;
+    }
+
+    public void setCardStack(List<Integer> cardStack) {
+        this.cardStack = cardStack;
     }
 }
 

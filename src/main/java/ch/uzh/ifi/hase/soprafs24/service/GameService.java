@@ -37,8 +37,7 @@ public class GameService {
 
     public Game startGame(GameLobby lobby)  {
         Game game = new Game();
-        List<GamePlayer> gamePlayers = new ArrayList<>(lobby.getPlayers());
-        game.setPlayers(gamePlayers);
+        game.startGame(lobby);
         gameRepository.save(game);
         gameRepository.flush();
         return game;

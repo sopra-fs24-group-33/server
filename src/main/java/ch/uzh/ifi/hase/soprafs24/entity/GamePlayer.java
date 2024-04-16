@@ -63,4 +63,12 @@ public class GamePlayer implements Serializable {
     public void setGameLobby(GameLobby gameLobby) {
         this.gameLobby = gameLobby;
     }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
 }

@@ -14,7 +14,7 @@ public class GameLobbyPostDTO {
 
     private List<GamePlayer> gamePlayers = new ArrayList<>();
 
-    private Game gamestatus;
+    private Long gameid;
 
     public Long getAdmin() {
         return admin;
@@ -40,11 +40,19 @@ public class GameLobbyPostDTO {
         this.gamePlayers = gamePlayers;
     }
 
-    public Game getGamestatus() {
-        return gamestatus;
+    public List<GamePlayer> getGamePlayers() {
+        return gamePlayers;
     }
 
-    public void setGamestatus(Game gamestatus) {
-        this.gamestatus = gamestatus;
+    public void setGamePlayers(List<GamePlayer> gamePlayers) {
+        this.gamePlayers = gamePlayers;
+    }
+
+    public Long getGameid() {
+        return gameid;
+    }
+
+    public void setGameid(Long gameid) {
+        this.gameid = gameid;
     }
 }

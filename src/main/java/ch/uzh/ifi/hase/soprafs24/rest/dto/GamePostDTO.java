@@ -8,6 +8,7 @@ public class GamePostDTO {
     private Integer currentCard;
     private Integer successfulMove;
     private Integer level;
+    private Long id;
 
     public List<Integer> getCardStack() {
         return cardStack;
@@ -47,5 +48,13 @@ public class GamePostDTO {
 
     public void setLevel(Integer level) {
         this.level = level;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
