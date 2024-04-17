@@ -97,6 +97,18 @@ public class Game implements Serializable {
         return playingCards;
     }
 
+    private void distributeShameToken() {
+      for (Integer i=0; i < this.players.size(); i++) {
+        List<Integer> myCards = this.players.get(i).getCards();
+        for (Integer j=0; j < myCards.size(); j++) {
+          if (myCards.get(j) == this.currentCard) {
+          Integer current = this.players.get(i).getShame_tokens();
+          this.players.get(i).setShame_tokens(current +1);
+          }
+        }
+      }
+    }
+
     private void deleteCard() {
         for (Integer i=0; i < this.players.size(); i++) {
             for (Integer j=0; j < this.players.get(i).getCards().size(); j++) {
@@ -129,6 +141,7 @@ public class Game implements Serializable {
                 this.distributeCards();
             }
         } else {
+            this.distributeShameToken();
             this.setSuccessfulMove(2);
         }
     }
