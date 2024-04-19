@@ -20,7 +20,7 @@ public class GameLobby implements Serializable {
     @Column
     private Long gameid;
 
-    @OneToMany(mappedBy = "gameLobby", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "gameLobby", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<GamePlayer> gamePlayers = new ArrayList<>();
 
     public void addPlayer(GamePlayer gamePlayer) {

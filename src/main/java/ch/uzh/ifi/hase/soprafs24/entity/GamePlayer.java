@@ -13,7 +13,7 @@ public class GamePlayer implements Serializable {
 
     @Id
     private Long id;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<Integer> cards;
     @Column
     private String name;
