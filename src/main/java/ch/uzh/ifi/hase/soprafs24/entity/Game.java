@@ -53,6 +53,7 @@ public class Game implements Serializable {
         for (GamePlayer gamePlayer : lobbyPlayers) {
             this.players.add(gamePlayer);
             gamePlayer.setGame(this);
+            gamePlayer.setShame_tokens(0);
         }
         this.setLevel(1);
         this.setSuccessfulMove(0);
