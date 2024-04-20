@@ -4,6 +4,7 @@ import ch.uzh.ifi.hase.soprafs24.entity.GameLobby;
 import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.service.GameLobbyService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONObject;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.TextMessage;
@@ -53,18 +54,38 @@ public class WebSocketLobbyHandler extends TextWebSocketHandler {
 			if (lobbyPinString != null) {
 				int lobbyPin = Integer.parseInt(lobbyPinString);
 				lobbySessions.computeIfAbsent(lobbyPin, k -> new CopyOnWriteArraySet<>()).add(session);
-				GameLobby gameLobby = gameLobbyService.getGameLobby(lobbyPin);
-				String lobbyState = objectMapper.writeValueAsString(DTOMapper.INSTANCE.convertEntityToGameLobbyGetDTO(gameLobby));
-				System.out.println("xD.");
-				session.sendMessage(new TextMessage(lobbyState));
+				broadcastLobbyState(lobbyPin);
 			}
 		}
 	}
 
+	private void broadcastLobbyState(int lobbyPin) throws Exception {
+		GameLobby gameLobby = gameLobbyService.getGameLobby(lobbyPin);
+		String lobbyState = objectMapper.writeValueAsString(DTOMapper.INSTANCE.convertEntityToGameLobbyGetDTO(gameLobby));
+		TextMessage message = new TextMessage(lobbyState);
+
+		lobbySessions.getOrDefault(lobbyPin, new CopyOnWriteArraySet<>())
+				.forEach(s -> {
+					try {
+						s.sendMessage(message);
+					} catch (Exception e) {
+						System.err.println("Failed to send message: " + e.getMessage());
+					}
+				});
+	}
+
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-		// Logic to handle incoming messages
+		System.out.println("MOIN");
+		// Handle incoming messages, such as a player joining
+		JSONObject jsonMessage = new JSONObject(message.getPayload());
+		if ("join".equals(jsonMessage.getString("action"))) {
+			int lobbyPin = jsonMessage.getInt("lobbyPin");
+			// Update lobby state with the new player details (not shown here)
+			broadcastLobbyState(lobbyPin); // Re-broadcast the updated lobby state to all clients
+		}
 	}
+
 
 	@Override
 	public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
@@ -81,9 +102,12 @@ public class WebSocketLobbyHandler extends TextWebSocketHandler {
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		lobbySessions.forEach((pin, sessions) -> {
-			sessions.remove(session);
-			if (sessions.isEmpty()) {
-				lobbySessions.remove(pin);
+			if (sessions.remove(session) && !sessions.isEmpty()) {
+				try {
+					broadcastLobbyState(pin);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
 			}
 		});
 		System.out.println("Removed session from lobby: Session ID " + session.getId());

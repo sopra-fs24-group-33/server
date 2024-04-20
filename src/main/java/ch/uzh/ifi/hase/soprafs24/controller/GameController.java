@@ -33,6 +33,7 @@ public class GameController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public GameGetDTO playCard(@PathVariable Long id, @RequestBody Integer playedCard) {
+			System.out.println(playedCard);
         Game updatedLobby = gameService.updateGamestatus(id, playedCard);
         return DTOMapper.INSTANCE.convertEntityToGameGetDTO(updatedLobby);
     }

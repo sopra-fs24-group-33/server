@@ -3,6 +3,7 @@ import ch.uzh.ifi.hase.soprafs24.entity.GameLobby;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.GameLobbyGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.service.GameLobbyService;
+import ch.uzh.ifi.hase.soprafs24.service.GameService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.json.JSONObject;
@@ -31,6 +32,9 @@ public class WebSocketConfig implements WebSocketConfigurer {
 	private GameLobbyService gameLobbyService;
 
 	@Autowired
+	private GameService gameService;
+
+	@Autowired
 	private ObjectMapper objectMapper;
 
 	public WebSocketConfig(GameLobbyService gameLobbyService) {
@@ -40,11 +44,18 @@ public class WebSocketConfig implements WebSocketConfigurer {
 	@Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
 		registry.addHandler(lobbyWebSocketHandler(), "/ws/lobby").setAllowedOrigins("*");
+		registry.addHandler(gameWebSocketHandler(), "/ws/game").setAllowedOrigins("*");
 	}
 
 	@Bean
 	public WebSocketHandler lobbyWebSocketHandler() {
+
 		return new WebSocketLobbyHandler(gameLobbyService, objectMapper);
+	}
+
+	@Bean
+	public WebSocketHandler gameWebSocketHandler() {
+		return new WebSocketGameHandler(gameService, objectMapper);
 	}
 
 	public class MyWebSocketHandler extends TextWebSocketHandler {

@@ -51,6 +51,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
+    implementation 'org.json:json:20210307'
+
 }
 
 bootJar {
