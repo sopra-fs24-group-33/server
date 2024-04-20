@@ -1,9 +1,11 @@
 package ch.uzh.ifi.hase.soprafs24.websocket;// WebSocketLobbyHandler.java
 
 import ch.uzh.ifi.hase.soprafs24.entity.GameLobby;
+import ch.uzh.ifi.hase.soprafs24.entity.GamePlayer;
 import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.service.GameLobbyService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hibernate.Hibernate;
 import org.json.JSONObject;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 import org.springframework.web.socket.WebSocketSession;
@@ -61,6 +63,9 @@ public class WebSocketLobbyHandler extends TextWebSocketHandler {
 
 	private void broadcastLobbyState(int lobbyPin) throws Exception {
 		GameLobby gameLobby = gameLobbyService.getGameLobby(lobbyPin);
+		for (GamePlayer player : gameLobby.getGamePlayers()) {
+			Hibernate.initialize(player.getCards()); // Initialize lazy-loaded collections
+		}
 		String lobbyState = objectMapper.writeValueAsString(DTOMapper.INSTANCE.convertEntityToGameLobbyGetDTO(gameLobby));
 		TextMessage message = new TextMessage(lobbyState);
 
@@ -76,7 +81,10 @@ public class WebSocketLobbyHandler extends TextWebSocketHandler {
 
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-		System.out.println("MOIN");
+
+		System.out.println("message:" + message.getPayload());
+		System.out.println("message type:" + message.getClass().getName());
+
 		// Handle incoming messages, such as a player joining
 		JSONObject jsonMessage = new JSONObject(message.getPayload());
 		if ("join".equals(jsonMessage.getString("action"))) {

@@ -27,7 +27,6 @@ public class GameLobbyController {
     @ResponseBody
     public GameLobbyGetDTO getGameLobby(@PathVariable int gamePin) {
         GameLobby gamelobby = gamelobbyService.getGameLobby(gamePin);
-			System.out.println("HAEEEEEEEEEEEEE:" + gamelobby.getGameId());
         return DTOMapper.INSTANCE.convertEntityToGameLobbyGetDTO(gamelobby);
     }
 

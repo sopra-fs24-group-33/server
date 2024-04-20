@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class GamePlayer implements Serializable {
@@ -14,7 +16,7 @@ public class GamePlayer implements Serializable {
     @Id
     private Long id;
     @ElementCollection(fetch = FetchType.EAGER)
-    private List<Integer> cards;
+    private Set<Integer> cards = new HashSet<>();
     @Column
     private String name;
     @Column
@@ -25,10 +27,10 @@ public class GamePlayer implements Serializable {
     @ManyToOne
     @JsonIgnore
     private Game game;
-    public List<Integer> getCards() {
+    public Set<Integer> getCards() {
         return cards;
     }
-    public void setCards(List<Integer> cards) {
+    public void setCards(Set<Integer> cards) {
         this.cards = cards;
     }
 

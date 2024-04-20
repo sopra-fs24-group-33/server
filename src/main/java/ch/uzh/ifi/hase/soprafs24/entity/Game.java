@@ -22,11 +22,11 @@ public class Game implements Serializable {
     @Column
     private Long LobbyId;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @Column(name = "array_element")
-    private List<Integer> cardStack;
-    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL)
-    private List<GamePlayer> players = new ArrayList<>();
+    private Set<Integer> cardStack = new HashSet<>();
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<GamePlayer> players = new HashSet<>();
     @Column
     private Integer currentCard;
 
@@ -40,16 +40,16 @@ public class Game implements Serializable {
     @Column
     private Integer level = 1;
 
-    private List<Integer> createStack() {
-        List<Integer> numbers = new ArrayList<>();
-        for (Integer i = 1; i < 100; i++) {
+    private Set<Integer> createStack() {
+        Set<Integer> numbers = new HashSet<>();
+        for (int i = 1; i < 100; i++) {
             numbers.add(i);
         }
         return numbers;
     }
 
     public Game startGame(GameLobby lobby) {
-        List<GamePlayer> lobbyPlayers = lobby.getGamePlayers();
+        Set<GamePlayer> lobbyPlayers = lobby.getGamePlayers();
         for (GamePlayer gamePlayer : lobbyPlayers) {
             this.players.add(gamePlayer);
             gamePlayer.setGame(this);
@@ -90,49 +90,40 @@ public class Game implements Serializable {
         return this;
     }
 
-    public List<Integer> getPlayingCards() {
-        List<Integer> playingCards = new ArrayList<>();
-        for (Integer i=0; i < this.players.size(); i++) {
-            playingCards.addAll(this.players.get(i).getCards());
+    public Set<Integer> getPlayingCards() {
+        Set<Integer> playingCards = new HashSet<>();
+        for (GamePlayer player : this.players) {
+            playingCards.addAll(player.getCards());
         }
         return playingCards;
     }
 
     private void distributeShameToken() {
-      for (Integer i=0; i < this.players.size(); i++) {
-        List<Integer> myCards = this.players.get(i).getCards();
-        for (Integer j=0; j < myCards.size(); j++) {
-          if (myCards.get(j) == this.currentCard) {
-          Integer current = this.players.get(i).getShame_tokens();
-          this.players.get(i).setShame_tokens(current +1);
+      for (GamePlayer player : this.players) {
+        Set<Integer> myCards = player.getCards();
+        for (Integer card : myCards) {
+          if (card.equals(this.currentCard)) {
+						Integer currentShameToken = player.getShame_tokens();
+						player.setShame_tokens(currentShameToken + 1);
           }
         }
       }
     }
 
-    private void deleteCard() {
-        for (Integer i=0; i < this.players.size(); i++) {
-            for (Integer j=0; j < this.players.get(i).getCards().size(); j++) {
-                if (this.players.get(i).getCards().get(j) == this.currentCard) {
-                    List<Integer> myCards = this.players.get(i).getCards();
-                    myCards.remove(Integer.valueOf(this.currentCard));
-                    this.players.get(i).setCards(myCards);
-                    break;
-                }
-            }
-        }
-        List<Integer> newStack = new ArrayList<>(this.getCards());
-        for (Integer j=0; j < this.cardStack.size(); j++) {
-            if (this.cardStack.get(j) == this.currentCard) {
-                newStack.remove(Integer.valueOf(this.currentCard));
-                this.setCards(newStack);
-                break;
-            }
-        }
-    }
+	private void deleteCard() {
+		for (GamePlayer player : this.players) {
+			if (player.getCards().contains(this.currentCard)) {
+				player.getCards().remove(this.currentCard); // Directly remove from the set
+				break; // Exit after the first match if only one card needs to be removed
+			}
+		}
 
-    private void doMove() {
-        List<Integer> playingCards = this.getPlayingCards();
+		this.cardStack.remove(this.currentCard); // Directly remove from the set
+	}
+
+
+	private void doMove() {
+        Set<Integer> playingCards = this.getPlayingCards();
         Integer minimum = Collections.min(playingCards);
         if (this.currentCard == minimum) {
             this.setSuccessfulMove(1);
@@ -147,38 +138,36 @@ public class Game implements Serializable {
         }
     }
 
-    private void distributeCards() {
-        if (this.cardStack.size() >= this.level*this.players.size()) {
-            for (Integer i=0; i<this.players.size(); i++){
-                for (Integer j=0; j < this.level; j++) {
-                    Random rand = new Random();
-                    Integer randomIndex = rand.nextInt(this.getCards().size());
-                    List<Integer> newStack = new ArrayList<>(this.getCards());
-                    // this.cardStack.remove(Integer.valueOf(randomIndex));
-                    if (this.players.get(i).getCards() == null || this.successfulMove == 2) {
-                        List<Integer> myNewStack = new ArrayList<>();
-                        myNewStack.add(this.getCards().get(randomIndex));
-                        this.players.get(i).setCards(myNewStack);
-                    } else {
-                        List<Integer> myNewStack = new ArrayList<>(this.players.get(i).getCards());
-                        myNewStack.add(this.getCards().get(randomIndex));
-                        this.players.get(i).setCards(myNewStack);
-                    }
-                    newStack.remove(Integer.valueOf(this.getCards().get(randomIndex)));
-                    this.setCards(newStack);
-                }
-            }
-        } else {
-            this.setSuccessfulMove(3);
-            // not enough cards -> end game
-        }
-    }
+	private void distributeCards() {
+		if (this.cardStack.size() >= this.level * this.players.size()) {
+			Random rand = new Random();
+			List<Integer> cardList = new ArrayList<>(this.getCards()); // Temporary list for random access
 
-    public List<Integer> getCards() {
+			for (GamePlayer player : this.players) {
+				if (player.getCards() == null) {
+					player.setCards(new HashSet<>());
+				}
+				for (int j = 0; j < this.level; j++) {
+					if (cardList.size() > 0) {
+						int randomIndex = rand.nextInt(cardList.size());
+						Integer selectedCard = cardList.get(randomIndex);
+						player.getCards().add(selectedCard); // Add to player's set of cards
+						cardList.remove(selectedCard); // Remove from temporary list
+					}
+				}
+			}
+			this.setCards(new HashSet<>(cardList)); // Update the game's cards with remaining
+		} else {
+			this.setSuccessfulMove(3); // not enough cards -> end game
+		}
+	}
+
+
+	public Set<Integer> getCards() {
         return this.cardStack;
     }
 
-    public void setCards(List<Integer> cards) {
+    public void setCards(Set<Integer> cards) {
         this.cardStack = cards;
     }
 
@@ -198,11 +187,11 @@ public class Game implements Serializable {
         this.successfulMove = move;
     }
 
-    public List<GamePlayer> getPlayers() {
+    public Set<GamePlayer> getPlayers() {
         return this.players;
     }
 
-    public void setPlayers(List<GamePlayer> playerz) {
+    public void setPlayers(Set<GamePlayer> playerz) {
         this.players = playerz;
     }
 
@@ -230,11 +219,11 @@ public class Game implements Serializable {
         LobbyId = lobbyId;
     }
 
-    public List<Integer> getCardStack() {
+    public Set<Integer> getCardStack() {
         return cardStack;
     }
 
-    public void setCardStack(List<Integer> cardStack) {
+    public void setCardStack(Set<Integer> cardStack) {
         this.cardStack = cardStack;
     }
 }

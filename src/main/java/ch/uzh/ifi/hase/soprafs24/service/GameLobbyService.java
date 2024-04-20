@@ -41,7 +41,7 @@ public class GameLobbyService {
 	// adds the gameId to the lobby so that every other client (in the lobby) knows that the game started
 		public void addGameId(int gamePin, Long gameId) {
 			GameLobby gameLobby = getGameLobby(gamePin);
-			gameLobby.setGameId(gameId);
+			gameLobby.setGameid(gameId);
 			gamelobbyRepository.save(gameLobby);
 			gamelobbyRepository.flush();
 		}
