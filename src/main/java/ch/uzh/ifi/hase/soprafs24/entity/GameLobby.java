@@ -14,7 +14,7 @@ public class GameLobby implements Serializable {
     @Column
     private Long admin;
 
-    @Id
+	@Id
     private int pin;
 
     @Column
@@ -65,13 +65,13 @@ public class GameLobby implements Serializable {
         this.gamePlayers = gamePlayers;
     }
 
-    public Long getGameId() {
-        return gameid;
-    }
+	public Long getGameid() {
+		return gameid;
+	}
 
-    public void setGameId(Long gameid) {
-        this.gameid = gameid;
-    }
+	public void setGameid(Long gameid) {
+		this.gameid = gameid;
+	}
 
     public List<GamePlayer> getGamePlayers() {
         return gamePlayers;
