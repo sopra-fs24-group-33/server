@@ -19,45 +19,23 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-public class WebSocketLobbyHandler extends TextWebSocketHandler {
+public class WebSocketLobbyHandler extends BaseWebSocketHandler {
 
-	private final Map<Integer, Set<WebSocketSession>> lobbySessions = new ConcurrentHashMap<>();
 	private final GameLobbyService gameLobbyService;
-	private final ObjectMapper objectMapper;
+	private final Map<Integer, Set<WebSocketSession>> lobbySessions = new ConcurrentHashMap<>();
 
 	public WebSocketLobbyHandler(GameLobbyService gameLobbyService, ObjectMapper objectMapper) {
+		super(objectMapper);
 		this.gameLobbyService = gameLobbyService;
-		this.objectMapper = objectMapper;
-	}
-
-	private Map<String, String> parseQueryParams(URI uri) {
-		String query = uri.getQuery();
-		Map<String, String> queryParams = new HashMap<>();
-		if (query != null) {
-			for (String param : query.split("&")) {
-				String[] entry = param.split("=");
-				if (entry.length > 1) {
-					queryParams.put(entry[0], entry[1]);
-				} else {
-					queryParams.put(entry[0], "");
-				}
-			}
-		}
-		return queryParams;
 	}
 
 	@Override
-	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-		System.out.println("Added session from lobby: Session ID " + session.getId());
-		URI uri = session.getUri();
-		if (uri != null) {
-			Map<String, String> queryParams = parseQueryParams(uri);
-			String lobbyPinString = queryParams.get("lobby");
-			if (lobbyPinString != null) {
-				int lobbyPin = Integer.parseInt(lobbyPinString);
-				lobbySessions.computeIfAbsent(lobbyPin, k -> new CopyOnWriteArraySet<>()).add(session);
-				broadcastLobbyState(lobbyPin);
-			}
+	protected void handleConnectionEstablishedWithParams(Map<String, String> queryParams, WebSocketSession session) throws Exception {
+		String lobbyPinString = queryParams.get("lobby");
+		if (lobbyPinString != null) {
+			int lobbyPin = Integer.parseInt(lobbyPinString);
+			lobbySessions.computeIfAbsent(lobbyPin, k -> new CopyOnWriteArraySet<>()).add(session);
+			broadcastLobbyState(lobbyPin);
 		}
 	}
 
@@ -78,32 +56,13 @@ public class WebSocketLobbyHandler extends TextWebSocketHandler {
 					}
 				});
 	}
-
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-
-		System.out.println("message:" + message.getPayload());
-		System.out.println("message type:" + message.getClass().getName());
-
-		// Handle incoming messages, such as a player joining
+		System.out.println("Received message: " + message.getPayload());
 		JSONObject jsonMessage = new JSONObject(message.getPayload());
 		if ("join".equals(jsonMessage.getString("action"))) {
 			int lobbyPin = jsonMessage.getInt("lobbyPin");
-			// Update lobby state with the new player details (not shown here)
 			broadcastLobbyState(lobbyPin); // Re-broadcast the updated lobby state to all clients
-		}
-	}
-
-
-	@Override
-	public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-		// Log the error
-		System.err.println("WebSocket transport error: " + exception.getMessage());
-
-		// Optional: Add additional error handling logic here
-		// For example, you might want to close the session if the error is severe:
-		if (session.isOpen()) {
-			session.close(CloseStatus.SERVER_ERROR.withReason("Transport error"));
 		}
 	}
 
