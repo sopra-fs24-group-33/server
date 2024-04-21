@@ -45,6 +45,7 @@ public class GameLobbyController {
     public GameGetDTO createGame(@PathVariable int gamePin) {
         GameLobby lobby = gamelobbyService.getGameLobby(gamePin);
         Game game = gameService.startGame(lobby);
+				gamelobbyService.addGameId(gamePin, game.getId());
         return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
     }
 

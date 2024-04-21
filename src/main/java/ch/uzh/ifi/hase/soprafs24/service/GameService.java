@@ -26,6 +26,7 @@ public class GameService {
     }
 
     public Game getGame(Long id) {
+			System.out.println("GAME ID:" + id);
         Optional<Game> optionalGame = gameRepository.findById(id);
         if (optionalGame != null) {
             return optionalGame.get();

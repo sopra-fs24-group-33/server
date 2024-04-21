@@ -3,7 +3,9 @@ package ch.uzh.ifi.hase.soprafs24.entity;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "GAMELOBBY")
@@ -20,8 +22,8 @@ public class GameLobby implements Serializable {
     @Column
     private Long gameid;
 
-    @OneToMany(mappedBy = "gameLobby", cascade = CascadeType.ALL)
-    private List<GamePlayer> gamePlayers = new ArrayList<>();
+    @OneToMany(mappedBy = "gameLobby", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<GamePlayer> gamePlayers = new HashSet<>();
 
     public void addPlayer(GamePlayer gamePlayer) {
         gamePlayers.add(gamePlayer);
@@ -57,27 +59,27 @@ public class GameLobby implements Serializable {
         this.pin = pin;
     }
 
-    public List<GamePlayer> getPlayers() {
+    public Set<GamePlayer> getPlayers() {
         return gamePlayers;
     }
 
-    public void setPlayers(List<GamePlayer> gamePlayers) {
+    public void setPlayers(Set<GamePlayer> gamePlayers) {
         this.gamePlayers = gamePlayers;
     }
 
-	public Long getGameid() {
-		return gameid;
-	}
+    public Long getGameid() {
+        return gameid;
+    }
 
-	public void setGameid(Long gameid) {
-		this.gameid = gameid;
-	}
+    public void setGameid(Long gameid) {
+        this.gameid = gameid;
+    }
 
-    public List<GamePlayer> getGamePlayers() {
+    public Set<GamePlayer> getGamePlayers() {
         return gamePlayers;
     }
 
-    public void setGamePlayers(List<GamePlayer> gamePlayers) {
+    public void setGamePlayers(Set<GamePlayer> gamePlayers) {
         this.gamePlayers = gamePlayers;
     }
 }
