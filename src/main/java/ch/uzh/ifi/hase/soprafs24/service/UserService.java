@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs24.service;
 import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs24.entity.Player;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
 import org.slf4j.Logger;
@@ -49,6 +50,13 @@ public class UserService {
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with ID: " + userId);
         }
+    }
+    
+    public void addShame_token(Long id)    {
+        User user = getUser(id);
+        user.setShame_tokens(user.getShame_tokens() + 1);
+        userRepository.save(user);
+        userRepository.flush();
     }
 
 

@@ -10,7 +10,6 @@ public class Player extends SuperUser {
         this.setToken(user.getToken());
         this.setName(user.getUsername());
         this.setIsUser(user.getId());
-        this.setShame_tokens(user.getShame_tokens());
     }
     public Player()  {
         super();

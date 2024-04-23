@@ -51,7 +51,7 @@ public class GameLobbyService {
         adminGamePlayer.setName(admin.getName());
         adminGamePlayer.setId(admin.getId());
         GameLobby gamelobby = new GameLobby();
-				gamelobby.setPin(generatePin());
+        gamelobby.setPin(generatePin());
         gamelobby.setAdmin(adminGamePlayer.getId());
         gamelobby.addPlayer(adminGamePlayer);
         gamelobbyRepository.save(gamelobby);

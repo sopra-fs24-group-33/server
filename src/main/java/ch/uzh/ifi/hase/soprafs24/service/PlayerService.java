@@ -1,5 +1,5 @@
 package ch.uzh.ifi.hase.soprafs24.service;
-import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs24.service.UserService;
 import ch.uzh.ifi.hase.soprafs24.entity.Player;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
@@ -35,11 +35,13 @@ public class PlayerService {
 
     private final PlayerRepository playerRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
 
     @Autowired
-    public PlayerService(@Qualifier("guestRepository") PlayerRepository playerRepository, UserRepository userRepository) {
+    public PlayerService(@Qualifier("guestRepository") PlayerRepository playerRepository, UserRepository userRepository, UserService userService) {
         this.playerRepository = playerRepository;
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     public List<Player> getPlayers() {
@@ -85,6 +87,16 @@ public class PlayerService {
         }
         else{
             throw new RuntimeException();
+        }
+    }
+
+    public void addShame_token(Long id)    {
+        Player player = getPlayer(id);
+        player.setShame_tokens(player.getShame_tokens() + 1);
+        playerRepository.save(player);
+        playerRepository.flush();
+        if (player.getIsUser() != null) {
+            userService.addShame_token(player.getIsUser());
         }
     }
 

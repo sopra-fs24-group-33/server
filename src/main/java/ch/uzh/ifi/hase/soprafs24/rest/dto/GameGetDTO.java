@@ -1,5 +1,7 @@
 package ch.uzh.ifi.hase.soprafs24.rest.dto;
 import ch.uzh.ifi.hase.soprafs24.entity.GamePlayer;
+
+import java.util.Comparator;
 import java.util.List;
 
 public class GameGetDTO {
@@ -23,6 +25,7 @@ public class GameGetDTO {
     }
 
     public void setPlayers(List<GamePlayer> players) {
+        players.sort(Comparator.comparing(GamePlayer::getId));
         this.players = players;
     }
 

@@ -43,15 +43,6 @@ public class UserController {
         return userGetDTOs;
     }
 
-    @PutMapping("/users/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @ResponseBody
-    public void updateUser(@PathVariable Long id, @RequestBody UserPostDTO userPostDTO) {
-        User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
-
-        userService.putUser(id, userInput);
-    }
-
 
     @GetMapping("/users/{id}")
     @ResponseStatus(HttpStatus.OK)
