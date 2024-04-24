@@ -130,6 +130,7 @@ public class GameService {
                 distributeCards(game);
             }
         } else {
+            deleteCard(game);
             distributeShameToken(game);
             game.setSuccessfulMove(2);
         }
