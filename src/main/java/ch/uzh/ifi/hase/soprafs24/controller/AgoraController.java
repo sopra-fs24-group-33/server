@@ -1,7 +1,4 @@
 package ch.uzh.ifi.hase.soprafs24.controller;
-import ch.uzh.ifi.hase.soprafs24.entity.Player;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.PlayerPostDTO;
-import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.service.AgoraService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
