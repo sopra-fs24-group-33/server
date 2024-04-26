@@ -63,17 +63,6 @@ public class PlayerServiceTest {
         assertThrows(ResponseStatusException.class, () -> playerService.getPlayer(testPlayer.getId()));
     }
 
-    @Test
-    public void putPlayer_validInput_success() {
-        Mockito.when(playerRepository.findById(testPlayer.getId())).thenReturn(Optional.of(testPlayer));
-        Player putPlayer = testPlayer;
-        putPlayer.setName("test");
-        Mockito.verify(playerRepository, Mockito.times(1)).save(Mockito.any());
-
-        // Assertions
-        assertEquals(testPlayer.getId(), putPlayer.getId());
-        assertEquals(testPlayer.getName(), putPlayer.getName());
-    }
 
 
 }

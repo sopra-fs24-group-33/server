@@ -38,7 +38,7 @@ public class GameController {
     }
 
     @DeleteMapping("/endgame/{id}")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
     public void playCard(@PathVariable Long id) {
         gameService.deleteGame(id);

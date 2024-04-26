@@ -58,15 +58,19 @@ public class PlayerService {
     }
 
     public Player logoutUser(Long id)   {
-        Optional<Player> guest = playerRepository.findById(id);
-        if (guest.isPresent())  {
-            Player foundPlayer = guest.get();
-            playerRepository.delete(foundPlayer);
-            playerRepository.flush();
-            return foundPlayer;
-        }
-        else{
-            return null;
+        try {
+            Optional<Player> guest = playerRepository.findById(id);
+            if (guest.isPresent()) {
+                Player foundPlayer = guest.get();
+                playerRepository.delete(foundPlayer);
+                playerRepository.flush();
+                return foundPlayer;
+            }
+            else {
+                return null;
+            }
+        } catch (ResponseStatusException ex) {
+            throw ex;
         }
     }
 
@@ -86,7 +90,7 @@ public class PlayerService {
             return loginPlayer;
         }
         else{
-            throw new RuntimeException();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found.");
         }
     }
 

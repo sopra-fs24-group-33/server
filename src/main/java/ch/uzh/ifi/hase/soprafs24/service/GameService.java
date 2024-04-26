@@ -42,27 +42,35 @@ public class GameService {
     }
 
     public void deleteGame(Long id) {
-        Game game = this.getGame(id);
-        gameRepository.delete(game);
-        gameRepository.flush();
+        try {
+            Game game = this.getGame(id);
+            gameRepository.delete(game);
+            gameRepository.flush();
+        } catch (ResponseStatusException ex) {
+            throw ex;
+        }
     }
 
     public Game startGame(GameLobby lobby) {
-        Game game = new Game();
-        game.setGamepin(lobby.getPin());
-        Set<GamePlayer> lobbyPlayers = lobby.getGamePlayers();
-        for (GamePlayer gamePlayer : lobbyPlayers) {
-            game.getPlayers().add(gamePlayer);
-            gamePlayer.setGame(game);
-            gamePlayer.setShame_tokens(0);
+        try {
+            Game game = new Game();
+            game.setGamepin(lobby.getPin());
+            Set<GamePlayer> lobbyPlayers = lobby.getGamePlayers();
+            for (GamePlayer gamePlayer : lobbyPlayers) {
+                game.getPlayers().add(gamePlayer);
+                gamePlayer.setGame(game);
+                gamePlayer.setShame_tokens(0);
+            }
+            game.setLevel(1);
+            game.setSuccessfulMove(0);
+            game.setCurrentCard(0);
+            gameRepository.save(game);
+            gameRepository.flush();
+            return game;
         }
-        game.setLevel(1);
-        game.setSuccessfulMove(0);
-        game.setCurrentCard(0);
-        gameRepository.save(game);
-        gameRepository.flush();
-        updateGamestatus(game.getId(), game.getCurrentCard());
-        return game;
+        catch (ResponseStatusException ex) {
+            throw ex;
+        }
     }
 
     private void doRound(Game game) {
@@ -87,13 +95,16 @@ public class GameService {
     }
 
     public Game updateGamestatus(Long id, Integer playedCard) {
-        Game game = this.getGame(id);
-        System.out.println("gamepin" + game.getGamepin());
-        game.setCurrentCard(playedCard);
-        doRound(game);
-        gameRepository.save(game);
-        gameRepository.flush();
-        return game;
+        try {
+            Game game = this.getGame(id);
+            game.setCurrentCard(playedCard);
+            doRound(game);
+            gameRepository.save(game);
+            gameRepository.flush();
+            return game;
+        } catch (ResponseStatusException ex) {
+            throw ex;
+        }
     }
 
     private void distributeShameToken(Game game) {

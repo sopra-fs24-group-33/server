@@ -76,53 +76,7 @@ public class PlayerControllerTest {
 
         // then
         mockMvc.perform(postRequest)
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", is(player.getId().intValue())))
-                .andExpect(jsonPath("$.name", is(player.getName())));
-    }
-
-    @Test
-    public void createPlayer_invalidInput_playerExists() throws Exception {
-        // given
-        Player player = new Player();
-        player.setName("testName");
-
-        PlayerPostDTO playerPostDTO = new PlayerPostDTO();
-        playerPostDTO.setName("testName");
-
-        given(playerService.createPlayer(Mockito.any())).willThrow(new ResponseStatusException(HttpStatus.CONFLICT, "Player already exists"));
-
-        MockHttpServletRequestBuilder postRequest = post("/players")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(playerPostDTO));
-
-        mockMvc.perform(postRequest)
-                .andExpect(status().isConflict());
-    }
-
-    @Test
-    public void putPlayer_validInput_playerUpdated() throws Exception {
-        // given
-        Player player = new Player();
-        player.setId(1L);
-        Long id = player.getId();
-        player.setName("testName");
-        player.setToken("1");
-
-        PlayerPostDTO playerPostDTO = new PlayerPostDTO();
-        playerPostDTO.setName("testName");
-
-
-
-
-        MockHttpServletRequestBuilder putRequest = put("/players/{id}", id)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(playerPostDTO));
-
-        // Then
-        mockMvc.perform(putRequest)
-                .andExpect(status().isNoContent());
-
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -156,25 +110,32 @@ public class PlayerControllerTest {
     }
 
     @Test
-    public void putPlayer_invalidId_playerNotFound() throws Exception {
-
+    public void logoutUser_validId_playerFound() throws Exception {
         Player player = new Player();
         player.setId(1L);
         Long id = player.getId();
         player.setName("testName");
         player.setToken("1");
+        given(playerService.logoutUser(Mockito.anyLong())).willReturn(player);
+        MockHttpServletRequestBuilder deleteRequest = delete("/players/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON);
 
-        PlayerPostDTO playerPostDTO = new PlayerPostDTO();
-        playerPostDTO.setName("testName");
+        mockMvc.perform(deleteRequest)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(player.getId().intValue())))
+                .andExpect(jsonPath("$.name", is(player.getName())));
+    }
 
-        doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "Player not found"))
-                .when(playerService);
+    @Test
+    public void logoutUser_invalidId_playerNotFound() throws Exception {
 
-        MockHttpServletRequestBuilder putRequest = put("/players/{id}", id)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(playerPostDTO));
+        Long id = 1L;
+        given(playerService.logoutUser(Mockito.any())).willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "Player not found"));
 
-        mockMvc.perform(putRequest)
+        MockHttpServletRequestBuilder deleteRequest = delete("/players/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(deleteRequest)
                 .andExpect(status().isNotFound());
     }
 

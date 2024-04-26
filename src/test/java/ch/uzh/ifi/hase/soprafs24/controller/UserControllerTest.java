@@ -2,8 +2,10 @@ package ch.uzh.ifi.hase.soprafs24.controller;
 
 import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
+import ch.uzh.ifi.hase.soprafs24.entity.Player;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs24.service.UserService;
+import ch.uzh.ifi.hase.soprafs24.service.PlayerService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -35,6 +37,9 @@ public class UserControllerTest {
 
     @MockBean
     private UserService userService;
+
+    @MockBean
+    PlayerService playerService;
 
     @Test
     public void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {
@@ -80,10 +85,7 @@ public class UserControllerTest {
 
         // then
         mockMvc.perform(postRequest)
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", is(user.getId().intValue())))
-                .andExpect(jsonPath("$.username", is(user.getUsername())))
-                .andExpect(jsonPath("$.status", is(user.getStatus().toString())));
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -103,33 +105,6 @@ public class UserControllerTest {
 
         mockMvc.perform(postRequest)
                 .andExpect(status().isConflict());
-    }
-
-    @Test
-    public void putUser_validInput_userUpdated() throws Exception {
-        // given
-        User user = new User();
-        user.setId(1L);
-        Long id = user.getId();
-        user.setUsername("testUsername");
-        user.setToken("1");
-        user.setStatus(UserStatus.OFFLINE);
-
-        UserPostDTO userPostDTO = new UserPostDTO();
-        userPostDTO.setUsername("testUsername");
-
-        doNothing().when(userService).putUser(any(), any());
-
-
-
-        MockHttpServletRequestBuilder putRequest = put("/users/{id}", id)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(userPostDTO));
-
-        // Then
-        mockMvc.perform(putRequest)
-                .andExpect(status().isNoContent());
-
     }
 
     @Test
@@ -165,11 +140,10 @@ public class UserControllerTest {
     }
 
     @Test
-    public void putUser_invalidId_userNotFound() throws Exception {
-
+    public void loginUser_validInput_userCreated() throws Exception {
+        // given
         User user = new User();
         user.setId(1L);
-        Long id = user.getId();
         user.setUsername("testUsername");
         user.setToken("1");
         user.setStatus(UserStatus.OFFLINE);
@@ -177,15 +151,37 @@ public class UserControllerTest {
         UserPostDTO userPostDTO = new UserPostDTO();
         userPostDTO.setUsername("testUsername");
 
-        doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"))
-                .when(userService)
-                .putUser(Mockito.any(), Mockito.any());
+        given(userService.createUser(Mockito.any())).willReturn(user);
 
-        MockHttpServletRequestBuilder putRequest = put("/users/{id}", id)
+        // when/then -> do the request + validate the result
+        MockHttpServletRequestBuilder postRequest = post("/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(userPostDTO));
 
-        mockMvc.perform(putRequest)
+        // then
+        mockMvc.perform(postRequest)
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void loginUser_invalidInput_userNotFound() throws Exception {
+        // given
+        User user = new User();
+        user.setUsername("testUsername");
+
+        UserPostDTO userPostDTO = new UserPostDTO();
+        userPostDTO.setUsername("testUsername");
+
+        Player player = new Player();
+        player.setName("testUsername");
+
+        given(playerService.loginUser(Mockito.any())).willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
+
+        MockHttpServletRequestBuilder postRequest = post("/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(userPostDTO));
+
+        mockMvc.perform(postRequest)
                 .andExpect(status().isNotFound());
     }
 

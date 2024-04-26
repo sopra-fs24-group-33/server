@@ -1,5 +1,7 @@
 package ch.uzh.ifi.hase.soprafs24.controller;
+
 import ch.uzh.ifi.hase.soprafs24.rest.dto.PlayerGetDTO;
+import ch.uzh.ifi.hase.soprafs24.entity.Player;
 import org.springframework.web.bind.annotation.PathVariable;
 import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.service.PlayerService;
@@ -53,10 +55,10 @@ public class PlayerController {
         return DTOMapper.INSTANCE.convertEntityToPlayerGetDTO(player);
     }
     @DeleteMapping("/players/{id}")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public PlayerGetDTO logoutUser(@PathVariable Long id)  {
-        ch.uzh.ifi.hase.soprafs24.entity.Player logged_in_player = playerService.logoutUser(id);
+        Player logged_in_player = playerService.logoutUser(id);
         return DTOMapper.INSTANCE.convertEntityToPlayerGetDTO(logged_in_player);
     }
 }
