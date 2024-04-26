@@ -1,6 +1,8 @@
 package ch.uzh.ifi.hase.soprafs24.service;
 import ch.uzh.ifi.hase.soprafs24.entity.Player;
+import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
+import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -17,6 +19,9 @@ public class PlayerServiceTest {
 
     @Mock
     private PlayerRepository playerRepository;
+
+    @Mock
+    private UserRepository userRepository;
 
     @InjectMocks
     private PlayerService playerService;
@@ -83,7 +88,27 @@ public class PlayerServiceTest {
         assertThrows(ResponseStatusException.class, () -> playerService.addShame_token(testPlayer.getId()));
     }
 
+    @Test
+    public void loginUser_success() {
+        User user = new User();
+        user.setUsername("testName");
+        user.setPassword("testPassword");
+        Mockito.when(userRepository.findByUsername(user.getUsername())).thenReturn(user);
+        Player player = playerService.loginUser(user);
+        assertEquals(testPlayer.getName(), player.getName());
+    }
 
+    @Test
+    public void loginUser_fail_userNotFound()   {
 
+        User user = new User();
+        Mockito.when(userRepository.findByUsername(Mockito.any())).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "Player not found."));
+        assertThrows(ResponseStatusException.class, () -> playerService.loginUser(user));
+    }
 
+    @Test
+    public void loginPlayer_success()   {
+        Player player = playerService.loginPlayer();
+        assertEquals("guest", player.getName());
+    }
 }
