@@ -48,41 +48,48 @@ public class GameService {
     }
 
     public Game startGame(GameLobby lobby) {
-        Game game = new Game();
-        game.setGamepin(lobby.getPin());
-        Set<GamePlayer> lobbyPlayers = lobby.getGamePlayers();
-        for (GamePlayer gamePlayer : lobbyPlayers) {
-            game.getPlayers().add(gamePlayer);
-            gamePlayer.setGame(game);
-            gamePlayer.setShame_tokens(0);
+        try {
+            Game game = new Game();
+            game.setGamepin(lobby.getPin());
+            Set<GamePlayer> lobbyPlayers = lobby.getGamePlayers();
+            for (GamePlayer gamePlayer : lobbyPlayers) {
+                game.getPlayers().add(gamePlayer);
+                gamePlayer.setGame(game);
+                gamePlayer.setShame_tokens(0);
+            }
+            game.setLevel(1);
+            game.setSuccessfulMove(0);
+            game.setCurrentCard(0);
+            gameRepository.save(game);
+            gameRepository.flush();
+            return game;
+        } catch (ResponseStatusException ex) {
+            throw ex;
         }
-        game.setLevel(1);
-        game.setSuccessfulMove(0);
-        game.setCurrentCard(0);
-        gameRepository.save(game);
-        gameRepository.flush();
-        updateGamestatus(game.getId(), game.getCurrentCard());
-        return game;
     }
 
-    private void doRound(Game game) {
-        if (game.getCurrentCard() == 0) {
-            game.setCards(createStack());
-            distributeCards(game);
-        } else if (game.getSuccessfulMove() == 2) {
-            if (!game.getPlayingCards().isEmpty()) {
-                for (Integer toBeDeleted : game.getPlayingCards()) {
-                    game.setCurrentCard(toBeDeleted);
-                    deleteCard(game);
+    public void doRound(Game game) {
+        try {
+            if (game.getCurrentCard() == 0) {
+                game.setCards(createStack());
+                distributeCards(game);
+            } else if (game.getSuccessfulMove() == 2) {
+                if (!game.getPlayingCards().isEmpty()) {
+                    for (Integer toBeDeleted : game.getPlayingCards()) {
+                        game.setCurrentCard(toBeDeleted);
+                        deleteCard(game);
+                    }
                 }
+                game.setSuccessfulMove(1);
+                distributeCards(game);
+            } else if (game.getSuccessfulMove() == 3) {
+                gameRepository.delete(game);
+                gameRepository.flush();
+            } else {
+                doMove(game);
             }
-            game.setSuccessfulMove(1);
-            distributeCards(game);
-        } else if (game.getSuccessfulMove() == 3) {
-            gameRepository.delete(game);
-            gameRepository.flush();
-        } else {
-            doMove(game);
+        } catch (ResponseStatusException ex) {
+            throw ex;
         }
     }
 
@@ -121,7 +128,10 @@ public class GameService {
 
     private void doMove(Game game) {
         Set<Integer> playingCards = game.getPlayingCards();
-        Integer minimum = Collections.min(playingCards);
+        Integer minimum = 0;
+        if (playingCards.size() > 0) {
+            minimum = Collections.min(playingCards);
+        }
         if (game.getCurrentCard().equals(minimum)) {
             game.setSuccessfulMove(1);
             deleteCard(game);
@@ -129,7 +139,7 @@ public class GameService {
                 game.setLevel(game.getLevel() + 1);
                 distributeCards(game);
             }
-        } else {
+        } else if (minimum != 0) {
             deleteCard(game);
             distributeShameToken(game);
             game.setSuccessfulMove(2);
@@ -156,7 +166,8 @@ public class GameService {
             }
             game.setCards(cardStack);
         } else {
-            game.setSuccessfulMove(3); // not enough cards -> end game
+            // not enough cards -> end game
+            game.setSuccessfulMove(3); 
         }
     }
 }
