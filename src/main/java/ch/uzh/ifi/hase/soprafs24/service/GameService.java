@@ -73,7 +73,7 @@ public class GameService {
         }
     }
 
-    private void doRound(Game game) {
+    public void doRound(Game game) {
         if (game.getCurrentCard() == 0) {
             game.setCards(createStack());
             distributeCards(game);
