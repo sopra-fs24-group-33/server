@@ -131,14 +131,14 @@ public class GameServiceIntegrationTest {
         testLobby.setPin(222);
         testLobby.setGameid(4L);
         testLobby.setAdmin(testPlayer.getId());
-        testLobby.setGamePlayers(null);
+        testLobby.setGamePlayers(players);
         testGamePlayer.setGameLobby(testLobby);
         testLobby.setGamePlayers(players);
         gameLobbyRepository.save(testLobby);
         gameLobbyRepository.flush();
 
-        testLobby = gameLobbyService.createGameLobby(testPlayer);
-        testGame = gameService.startGame(testLobby);
+        // testLobby = gameLobbyService.createGameLobby(testPlayer);
+        testGame = gameService.startGame(gameLobbyService.createGameLobby(testPlayer));
 
         assertEquals(1, testGame.getLevel());
         assertEquals(0, testGame.getSuccessfulMove());
@@ -180,10 +180,8 @@ public class GameServiceIntegrationTest {
     @Test
     public void doRound_fail() {
         assertEquals(gameRepository.findById(1L), Optional.empty());
-
         Game testGame = new Game();
         testGame.setId(1L);
-
         assertThrows(NullPointerException.class, () -> gameService.doRound(testGame));
     }
 
