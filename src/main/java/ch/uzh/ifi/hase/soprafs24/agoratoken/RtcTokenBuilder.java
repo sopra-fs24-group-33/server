@@ -4,8 +4,8 @@ import ch.uzh.ifi.hase.soprafs24.constant.Role;
 
 public class RtcTokenBuilder {
 
-    private static String appId = "6784c587dc6d4e5594afbbe295d65245";
-    private static String appCertificate = "d016d99bc4d8434aa063a0efe54412f1";
+    private static String appId = "bb103a1b0b3c477ea5bae0cc1c32525f";
+    private static String appCertificate = "e40a7e58667048c4b1b8af90096fc124";
     private static int expirationTimeInSeconds = 7200;
     public String buildTokenWithUserAccount(String channelName, String account, Role role) {
 
