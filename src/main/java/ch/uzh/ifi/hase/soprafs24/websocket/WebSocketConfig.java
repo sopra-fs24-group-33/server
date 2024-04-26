@@ -45,17 +45,23 @@ public class WebSocketConfig implements WebSocketConfigurer {
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
 		registry.addHandler(lobbyWebSocketHandler(), "/ws/lobby").setAllowedOrigins("*");
 		registry.addHandler(gameWebSocketHandler(), "/ws/game").setAllowedOrigins("*");
+		registry.addHandler(readyWebSocketHandler(), "ws/ready").setAllowedOrigins("*");
 	}
 
 	@Bean
 	public WebSocketHandler lobbyWebSocketHandler() {
-
 		return new WebSocketLobbyHandler(gameLobbyService, objectMapper);
 	}
 
 	@Bean
 	public WebSocketHandler gameWebSocketHandler() {
+
 		return new WebSocketGameHandler(gameService, objectMapper);
+	}
+
+	@Bean
+	public WebSocketHandler readyWebSocketHandler() {
+		return new WebSocketReadyHandler(objectMapper);
 	}
 
 	public class MyWebSocketHandler extends TextWebSocketHandler {
