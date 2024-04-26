@@ -105,4 +105,10 @@ public class PlayerServiceTest {
         Mockito.when(userRepository.findByUsername(Mockito.any())).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "Player not found."));
         assertThrows(ResponseStatusException.class, () -> playerService.loginUser(user));
     }
+
+    @Test
+    public void loginPlayer_success()   {
+        Player player = playerService.loginPlayer();
+        assertEquals("guest", player.getName());
+    }
 }
