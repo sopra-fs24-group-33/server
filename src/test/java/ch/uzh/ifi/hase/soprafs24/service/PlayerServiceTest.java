@@ -7,6 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.Optional;
 
@@ -30,6 +31,8 @@ public class PlayerServiceTest {
         testPlayer = new Player();
         testPlayer.setId(1L);
         testPlayer.setName("testName");
+        testPlayer.setShame_tokens(0);
+        testPlayer.setIsUser(null);
 
         // when -> any object is being save in the playerRepository -> return the dummy
         // testPlayer
@@ -62,6 +65,24 @@ public class PlayerServiceTest {
     public void getPlayer_nonexistentPlayer_throwsException() {
         assertThrows(ResponseStatusException.class, () -> playerService.getPlayer(testPlayer.getId()));
     }
+
+    @Test
+    public void addShame_token_success()    {
+        Mockito.when(playerRepository.findById(testPlayer.getId())).thenReturn(Optional.of(testPlayer));
+        playerService.addShame_token(testPlayer.getId());
+        assertEquals(testPlayer.getId(), testPlayer.getId());
+        assertEquals(testPlayer.getName(), testPlayer.getName());
+        assertEquals(1, testPlayer.getShame_tokens());
+    }
+
+    @Test
+    public void addShame_token_fail_nonExistentPlayer() {
+
+        Mockito.when(playerRepository.findById(testPlayer.getId()))
+                .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "Player not found."));
+        assertThrows(ResponseStatusException.class, () -> playerService.addShame_token(testPlayer.getId()));
+    }
+
 
 
 
