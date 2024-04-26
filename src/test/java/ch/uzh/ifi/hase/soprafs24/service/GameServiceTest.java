@@ -9,6 +9,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.lang.reflect.Method;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -97,4 +99,64 @@ public class GameServiceTest {
         assertEquals(0, createdGame.getCurrentCard());
         // Additional assertions as needed
     }
+		@Test
+		public void getGame_nonExistentId_throwsException() {
+			Long nonExistentId = 999L;
+			Mockito.when(gameRepository.findById(nonExistentId)).thenReturn(Optional.empty());
+			assertThrows(ResponseStatusException.class, () -> gameService.getGame(nonExistentId));
+		}
+
+		@Test
+		public void getGame_validId_returnsGame() {
+			Mockito.when(gameRepository.findById(testGame.getId())).thenReturn(Optional.of(testGame));
+			Game retrievedGame = gameService.getGame(testGame.getId());
+			assertNotNull(retrievedGame);
+			assertEquals(testGame.getId(), retrievedGame.getId());
+	}
+
+		@Test
+		public void startGame_nullLobby_throwsNullPointerException() {
+			assertThrows(NullPointerException.class, () -> gameService.startGame(null));
+		}
+
+
+		@Test
+		public void testDistributeCards() throws Exception {
+			// Setup
+			GameService gameService = new GameService(gameRepository, playerService);
+			Game game = new Game();
+			game.setLevel(1);
+			Set<Integer> cards = new HashSet<>();
+			for (int i = 1; i <= 10; i++) {  // Assuming a small deck for simplicity
+				cards.add(i);
+			}
+			game.setCards(cards);
+
+			Set<GamePlayer> players = new HashSet<>();
+			GamePlayer player1 = new GamePlayer();
+			player1.setCards(new HashSet<>());
+			players.add(player1);
+
+			GamePlayer player2 = new GamePlayer();
+			player2.setCards(new HashSet<>());
+			players.add(player2);
+
+			game.setPlayers(players);
+
+			// Using reflection to access the private method
+			Method method = GameService.class.getDeclaredMethod("distributeCards", Game.class);
+			method.setAccessible(true);
+
+			// Invoke the private method
+			method.invoke(gameService, game);
+
+			// Assertions
+			assertTrue(player1.getCards().size() > 0, "Player 1 should have cards");
+			assertTrue(player2.getCards().size() > 0, "Player 2 should have cards");
+			assertEquals(8, game.getCards().size(), "Two cards should be removed from the deck");
+
+			// Clean up
+			method.setAccessible(false);
+		}
+
 }
