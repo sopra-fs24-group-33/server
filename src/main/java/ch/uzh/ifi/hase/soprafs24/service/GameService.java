@@ -20,12 +20,15 @@ import java.util.Set;
 public class GameService {
 
     private final GameRepository gameRepository;
+
+    private final GameLobbyService gamelobbyService;
     private final PlayerService playerService;
 
     @Autowired
-    public GameService(@Qualifier("gameRepository") GameRepository gameRepository, PlayerService playerService) {
+    public GameService(@Qualifier("gameRepository") GameRepository gameRepository, PlayerService playerService, GameLobbyService gamelobbyService) {
         this.gameRepository = gameRepository;
         this.playerService = playerService;
+        this.gamelobbyService = gamelobbyService;
     }
 
     public Game getGame(Long id) {
@@ -44,6 +47,11 @@ public class GameService {
     public void deleteGame(Long id) {
         try {
             Game game = this.getGame(id);
+            gamelobbyService.deleteReference(game.getGamepin());
+            game.getPlayers().forEach(player -> {
+                player.setGame(null);
+                player.setCards(null);
+            });
             gameRepository.delete(game);
             gameRepository.flush();
         } catch (ResponseStatusException ex) {
@@ -87,8 +95,7 @@ public class GameService {
             game.setSuccessfulMove(1);
             distributeCards(game);
         } else if (game.getSuccessfulMove() == 3) {
-            gameRepository.delete(game);
-            gameRepository.flush();
+            this.deleteGame(game.getId());
         } else {
             doMove(game);
         }
@@ -141,8 +148,8 @@ public class GameService {
                 distributeCards(game);
             }
         } else {
-            deleteCard(game);
             distributeShameToken(game);
+            deleteCard(game);
             game.setSuccessfulMove(2);
         }
     }

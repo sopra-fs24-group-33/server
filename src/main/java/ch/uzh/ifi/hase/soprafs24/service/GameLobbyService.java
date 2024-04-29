@@ -39,12 +39,12 @@ public class GameLobbyService {
     }
 
 	// adds the gameId to the lobby so that every other client (in the lobby) knows that the game started
-		public void addGameId(int gamePin, Long gameId) {
-			GameLobby gameLobby = getGameLobby(gamePin);
-			gameLobby.setGameid(gameId);
-			gamelobbyRepository.save(gameLobby);
-			gamelobbyRepository.flush();
-		}
+    public void addGameId(int gamePin, Long gameId) {
+        GameLobby gameLobby = getGameLobby(gamePin);
+        gameLobby.setGameid(gameId);
+        gamelobbyRepository.save(gameLobby);
+        gamelobbyRepository.flush();
+    }
 
     public GameLobby createGameLobby(Player admin) {
         GamePlayer adminGamePlayer = new GamePlayer();
@@ -59,6 +59,17 @@ public class GameLobbyService {
 
         log.debug("Created Information for GameLobby: {}", gamelobby);
         return gamelobby;
+    }
+
+    public void deleteReference(int gamePin)    {
+        try {
+            GameLobby lobby = getGameLobby(gamePin);
+            lobby.setGameid(null);
+            gamelobbyRepository.save(lobby);
+            gamelobbyRepository.flush();
+        } catch (ResponseStatusException ex) {
+            throw ex;
+        }
     }
     
     public GameLobby addPlayer(Player player, GameLobby lobby) {
