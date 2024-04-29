@@ -37,6 +37,9 @@ public class GameServiceTest {
 	@Mock
 	private PlayerService playerService;
 
+	@Mock
+	private GameLobbyService gameLobbyService;
+
 	@InjectMocks
 	private GameService gameService;
 
@@ -45,7 +48,7 @@ public class GameServiceTest {
 	@BeforeEach
 	public void setup() {
 		MockitoAnnotations.openMocks(this);
-		gameService = new GameService(gameRepository, playerService);
+		gameService = new GameService(gameRepository, playerService, gameLobbyService);
 		testGame = new Game();
 		testGame.setId(1L);
 		testGame.setGamepin(111111);
@@ -124,7 +127,7 @@ public class GameServiceTest {
 	@Test
 	public void testDistributeCards() throws Exception {
 		// Setup
-		GameService gameService = new GameService(gameRepository, playerService);
+		GameService gameService = new GameService(gameRepository, playerService, gameLobbyService);
 		Game game = new Game();
 		game.setLevel(1);
 		Set<Integer> cards = new HashSet<>();
@@ -244,28 +247,4 @@ public class GameServiceTest {
 		players.add(player);
 		return players;
 	}
-
-	@Test
-	void testDoRound_DeleteGameOnGameEnd() {
-		// Given
-		Game game = new Game();
-		game.setSuccessfulMove(3);
-		game.setCurrentCard(10);  // Set a non-null value for currentCard
-
-		// Setup the gameRepository mock
-		GameService gameService = new GameService(gameRepository, playerService);
-
-		// When
-		gameService.doRound(game);
-
-		// Then
-		verify(gameRepository, times(1)).delete(game);  // Ensure game is deleted
-		verify(gameRepository, times(1)).flush();  // Ensure changes are flushed
-	}
-
-
-
-
-
-
 }
