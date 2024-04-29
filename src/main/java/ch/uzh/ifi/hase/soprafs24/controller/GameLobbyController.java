@@ -45,6 +45,7 @@ public class GameLobbyController {
     public GameGetDTO createGame(@PathVariable int gamePin) {
         GameLobby lobby = gamelobbyService.getGameLobby(gamePin);
         Game game = gameService.startGame(lobby);
+        game = gameService.updateGamestatus(game.getId(), 0);
         gamelobbyService.addGameId(gamePin, game.getId());
         return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
     }
@@ -59,7 +60,7 @@ public class GameLobbyController {
         return DTOMapper.INSTANCE.convertEntityToGameLobbyGetDTO(createdGameLobby);
     }
     @PutMapping("/gamelobbies/{gamePin}")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public GameLobbyGetDTO removePlayer(@PathVariable Integer gamePin, @RequestBody PlayerPostDTO playerPostDTO) {
         Player player = DTOMapper.INSTANCE.convertPlayerPostDTOtoEntity(playerPostDTO);

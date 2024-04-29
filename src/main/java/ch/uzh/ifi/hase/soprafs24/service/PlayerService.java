@@ -53,20 +53,24 @@ public class PlayerService {
         if (optionalGuest.isPresent()) {
             return optionalGuest.get();
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Guest not found with ID: " + guestId);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Player not found.");
         }
     }
 
     public Player logoutUser(Long id)   {
-        Optional<Player> guest = playerRepository.findById(id);
-        if (guest.isPresent())  {
-            Player foundPlayer = guest.get();
-            playerRepository.delete(foundPlayer);
-            playerRepository.flush();
-            return foundPlayer;
-        }
-        else{
-            return null;
+        try {
+            Optional<Player> guest = playerRepository.findById(id);
+            if (guest.isPresent()) {
+                Player foundPlayer = guest.get();
+                playerRepository.delete(foundPlayer);
+                playerRepository.flush();
+                return foundPlayer;
+            }
+            else {
+                return null;
+            }
+        } catch (ResponseStatusException ex) {
+            throw ex;
         }
     }
 
@@ -86,17 +90,21 @@ public class PlayerService {
             return loginPlayer;
         }
         else{
-            throw new RuntimeException();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found.");
         }
     }
 
     public void addShame_token(Long id)    {
-        Player player = getPlayer(id);
-        player.setShame_tokens(player.getShame_tokens() + 1);
-        playerRepository.save(player);
-        playerRepository.flush();
-        if (player.getIsUser() != null) {
-            userService.addShame_token(player.getIsUser());
+        try {
+            Player player = getPlayer(id);
+            player.setShame_tokens(player.getShame_tokens() + 1);
+            playerRepository.save(player);
+            playerRepository.flush();
+            if (player.getIsUser() != null) {
+                userService.addShame_token(player.getIsUser());
+            }
+        } catch (ResponseStatusException ex) {
+            throw ex;
         }
     }
 
@@ -104,8 +112,6 @@ public class PlayerService {
 
     public Player createPlayer(Player newPlayer) {
         newPlayer.setToken(UUID.randomUUID().toString());
-        // saves the given entity but data is only persisted in the database once
-        // flush() is called
         newPlayer = playerRepository.save(newPlayer);
         playerRepository.flush();
 

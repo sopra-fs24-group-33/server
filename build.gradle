@@ -38,6 +38,9 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+
+    implementation 'commons-codec:commons-codec:1.9'
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.h2database:h2'
@@ -61,9 +64,9 @@ bootJar {
 
 sonar {
     properties {
-        property "sonar.projectKey", "TODO"
-        property "sonar.organization", "TODO"
-        property "sonar.host.url", "TODO"
+        property "sonar.projectKey", "sopra-fs24-group-33_server"
+        property "sonar.organization", "sopra-fs24-group-33"
+        property "sonar.host.url", "https://sonarcloud.io"
     }
 }
 

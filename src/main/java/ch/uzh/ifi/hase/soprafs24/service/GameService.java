@@ -20,12 +20,15 @@ import java.util.Set;
 public class GameService {
 
     private final GameRepository gameRepository;
+
+    private final GameLobbyService gamelobbyService;
     private final PlayerService playerService;
 
     @Autowired
-    public GameService(@Qualifier("gameRepository") GameRepository gameRepository, PlayerService playerService) {
+    public GameService(@Qualifier("gameRepository") GameRepository gameRepository, PlayerService playerService, GameLobbyService gamelobbyService) {
         this.gameRepository = gameRepository;
         this.playerService = playerService;
+        this.gamelobbyService = gamelobbyService;
     }
 
     public Game getGame(Long id) {
@@ -42,30 +45,43 @@ public class GameService {
     }
 
     public void deleteGame(Long id) {
-        Game game = this.getGame(id);
-        gameRepository.delete(game);
-        gameRepository.flush();
+        try {
+            Game game = this.getGame(id);
+            gamelobbyService.deleteReference(game.getGamepin());
+            game.getPlayers().forEach(player -> {
+                player.setGame(null);
+                player.setCards(null);
+            });
+            gameRepository.delete(game);
+            gameRepository.flush();
+        } catch (ResponseStatusException ex) {
+            throw ex;
+        }
     }
 
     public Game startGame(GameLobby lobby) {
-        Game game = new Game();
-        game.setGamepin(lobby.getPin());
-        Set<GamePlayer> lobbyPlayers = lobby.getGamePlayers();
-        for (GamePlayer gamePlayer : lobbyPlayers) {
-            game.getPlayers().add(gamePlayer);
-            gamePlayer.setGame(game);
-            gamePlayer.setShame_tokens(0);
+        try {
+            Game game = new Game();
+            game.setGamepin(lobby.getPin());
+            Set<GamePlayer> lobbyPlayers = lobby.getGamePlayers();
+            for (GamePlayer gamePlayer : lobbyPlayers) {
+                game.getPlayers().add(gamePlayer);
+                gamePlayer.setGame(game);
+                gamePlayer.setShame_tokens(0);
+            }
+            game.setLevel(1);
+            game.setSuccessfulMove(0);
+            game.setCurrentCard(0);
+            gameRepository.save(game);
+            gameRepository.flush();
+            return game;
         }
-        game.setLevel(1);
-        game.setSuccessfulMove(0);
-        game.setCurrentCard(0);
-        gameRepository.save(game);
-        gameRepository.flush();
-        updateGamestatus(game.getId(), game.getCurrentCard());
-        return game;
+        catch (ResponseStatusException ex) {
+            throw ex;
+        }
     }
 
-    private void doRound(Game game) {
+    public void doRound(Game game) {
         if (game.getCurrentCard() == 0) {
             game.setCards(createStack());
             distributeCards(game);
@@ -79,21 +95,23 @@ public class GameService {
             game.setSuccessfulMove(1);
             distributeCards(game);
         } else if (game.getSuccessfulMove() == 3) {
-            gameRepository.delete(game);
-            gameRepository.flush();
+            this.deleteGame(game.getId());
         } else {
             doMove(game);
         }
     }
 
     public Game updateGamestatus(Long id, Integer playedCard) {
-        Game game = this.getGame(id);
-        System.out.println("gamepin" + game.getGamepin());
-        game.setCurrentCard(playedCard);
-        doRound(game);
-        gameRepository.save(game);
-        gameRepository.flush();
-        return game;
+        try {
+            Game game = this.getGame(id);
+            game.setCurrentCard(playedCard);
+            doRound(game);
+            gameRepository.save(game);
+            gameRepository.flush();
+            return game;
+        } catch (ResponseStatusException ex) {
+            throw ex;
+        }
     }
 
     private void distributeShameToken(Game game) {
@@ -130,8 +148,8 @@ public class GameService {
                 distributeCards(game);
             }
         } else {
-            deleteCard(game);
             distributeShameToken(game);
+            deleteCard(game);
             game.setSuccessfulMove(2);
         }
     }

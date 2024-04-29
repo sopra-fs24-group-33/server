@@ -17,7 +17,7 @@ public class GameLobby implements Serializable {
     private Long admin;
 
 	@Id
-    private int pin;
+    private Integer pin;
 
     @Column
     private Long gameid;
