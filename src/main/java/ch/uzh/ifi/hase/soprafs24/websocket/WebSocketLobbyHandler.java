@@ -56,6 +56,19 @@ public class WebSocketLobbyHandler extends BaseWebSocketHandler {
 					}
 				});
 	}
+
+	private void broadcastLeaveAll(int lobbyPin) {
+		TextMessage message = new TextMessage("leave");
+
+		lobbySessions.getOrDefault(lobbyPin, new CopyOnWriteArraySet<>())
+				.forEach(s -> {
+					try {
+						s.sendMessage(message);
+					} catch (Exception e) {
+						System.err.println("Failed to send message: " + e.getMessage());
+					}
+				});
+	}
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		System.out.println("Received message: " + message.getPayload());
@@ -73,7 +86,7 @@ public class WebSocketLobbyHandler extends BaseWebSocketHandler {
 				try {
 					broadcastLobbyState(pin);
 				} catch (Exception e) {
-					throw new RuntimeException(e);
+					broadcastLeaveAll(pin);
 				}
 			}
 		});
