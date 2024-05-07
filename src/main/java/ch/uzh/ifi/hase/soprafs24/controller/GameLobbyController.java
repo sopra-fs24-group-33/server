@@ -56,8 +56,11 @@ public class GameLobbyController {
     public GameLobbyGetDTO addPlayer(@PathVariable int gamePin, @RequestBody PlayerPostDTO playerPostDTO) {
         Player player = DTOMapper.INSTANCE.convertPlayerPostDTOtoEntity(playerPostDTO);
         GameLobby lobby = gamelobbyService.getGameLobby(gamePin);
-        GameLobby createdGameLobby = gamelobbyService.addPlayer(player, lobby);
-        return DTOMapper.INSTANCE.convertEntityToGameLobbyGetDTO(createdGameLobby);
+        if (lobby.getGamePlayers().size() < 5) {
+            GameLobby createdGameLobby = gamelobbyService.addPlayer(player, lobby);
+            return DTOMapper.INSTANCE.convertEntityToGameLobbyGetDTO(createdGameLobby);
+        }
+        return DTOMapper.INSTANCE.convertEntityToGameLobbyGetDTO(lobby);
     }
     @PutMapping("/gamelobbies/{gamePin}")
     @ResponseStatus(HttpStatus.OK)
