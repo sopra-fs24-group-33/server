@@ -1,5 +1,7 @@
 package ch.uzh.ifi.hase.soprafs24.service;
 import ch.uzh.ifi.hase.soprafs24.entity.*;
+import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
+import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.GameLobbyRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +34,12 @@ public class GameServiceTest {
 	private GameRepository gameRepository;
 
 	@Mock
+	private PlayerRepository playerRepository;
+
+	@Mock
+	private UserRepository userRepository;
+
+	@Mock
 	private GameLobbyRepository gamelobbyRepository;
 
 	@Mock
@@ -48,7 +56,7 @@ public class GameServiceTest {
 	@BeforeEach
 	public void setup() {
 		MockitoAnnotations.openMocks(this);
-		gameService = new GameService(gameRepository, playerService, gameLobbyService);
+		gameService = new GameService(gameRepository, playerRepository, userRepository, playerService, gameLobbyService);
 		testGame = new Game();
 		testGame.setId(1L);
 		testGame.setGamepin(111111);
@@ -127,7 +135,7 @@ public class GameServiceTest {
 	@Test
 	public void testDistributeCards() throws Exception {
 		// Setup
-		GameService gameService = new GameService(gameRepository, playerService, gameLobbyService);
+		GameService gameService = new GameService(gameRepository, playerRepository, userRepository, playerService, gameLobbyService);
 		Game game = new Game();
 		game.setLevel(1);
 		Set<Integer> cards = new HashSet<>();
