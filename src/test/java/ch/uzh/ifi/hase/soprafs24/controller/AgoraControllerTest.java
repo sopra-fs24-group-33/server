@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.web.server.ResponseStatusException;
+
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -27,7 +29,7 @@ public class AgoraControllerTest {
     PlayerService playerService;
 
     @Test
-    public void givenAgoras_whenGetAgoras_thenReturnJsonArray() throws Exception {
+    public void givenAgoras_whenGetAgoras_throw_exception() throws Exception {
         // given
         Long playerId = 1L;
         int gamePin = 111111;
@@ -38,4 +40,18 @@ public class AgoraControllerTest {
         // then
         mockMvc.perform(getRequest).andExpect(status().isCreated());
     }
+
+    @Test
+    public void givenAgoras_whenGetAgoras_thenReturnJsonArray() throws Exception {
+        // given
+        Long playerId = 1L;
+        int gamePin = 111111;
+        given(agoraService.createToken(Mockito.anyInt(), Mockito.anyLong())).willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
+        // when
+        MockHttpServletRequestBuilder getRequest = get("/agoratoken/{gamePin}/{playerId}", gamePin, playerId).contentType(MediaType.APPLICATION_JSON);
+
+        // then
+        mockMvc.perform(getRequest).andExpect(status().isNotFound());
+    }
+
 }
