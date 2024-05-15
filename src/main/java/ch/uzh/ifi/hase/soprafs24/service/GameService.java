@@ -59,15 +59,6 @@ public class GameService {
             game.getPlayers().forEach(player -> {
                 player.setGame(null);
                 player.setCards(null);
-                Player myPlayer = playerRepository.findById(id).get();
-                if (myPlayer.getIsUser() != null) {
-                    User myUser = userRepository.findById(id).get();
-                    // System.out.println(myUser.getGamesPlayed());
-                    myUser.setGamesPlayed((myUser.getGamesPlayed() + 1));
-                    userRepository.save(myUser);
-                    userRepository.flush();
-                    // System.out.println(myUser.getGamesPlayed());
-                }
             });
             gameRepository.delete(game);
             gameRepository.flush();
@@ -112,7 +103,7 @@ public class GameService {
             game.setSuccessfulMove(1);
             distributeCards(game);
         } else if (game.getSuccessfulMove() == 3) {
-            this.deleteGame(game.getId());
+            //toImplement, add falwless win
         } else {
             doMove(game);
         }
