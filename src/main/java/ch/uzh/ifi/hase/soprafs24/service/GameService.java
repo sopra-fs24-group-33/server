@@ -5,8 +5,6 @@ import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.entity.Game;
 import ch.uzh.ifi.hase.soprafs24.entity.GameLobby;
 import ch.uzh.ifi.hase.soprafs24.repository.GameRepository;
-import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
-import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -14,27 +12,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashSet;
 import java.util.*;
-import java.util.Random;
-import java.util.Set;
 
 @Service
 @Transactional
 public class GameService {
 
     private final GameRepository gameRepository;
-    private final PlayerRepository playerRepository;
-    private final UserRepository userRepository;
 
     private final GameLobbyService gamelobbyService;
     private final PlayerService playerService;
 
     @Autowired
-    public GameService(@Qualifier("gameRepository") GameRepository gameRepository, PlayerRepository playerRepository, UserRepository userRepository, PlayerService playerService, GameLobbyService gamelobbyService) {
+    public GameService(@Qualifier("gameRepository") GameRepository gameRepository, PlayerService playerService, GameLobbyService gamelobbyService) {
         this.gameRepository = gameRepository;
-        this.playerRepository = playerRepository;
-        this.userRepository = userRepository;
         this.playerService = playerService;
         this.gamelobbyService = gamelobbyService;
     }
@@ -103,7 +94,21 @@ public class GameService {
             game.setSuccessfulMove(1);
             distributeCards(game);
         } else if (game.getSuccessfulMove() == 3) {
-            //toImplement, add falwless win
+            // count shame tokens in the game
+            Integer counter = 0;
+            for (GamePlayer player : game.getPlayers()) {
+                counter += player.getShame_tokens();
+            }
+            final Integer count = counter;
+            // update user info
+            game.getPlayers().forEach(player -> {
+                Player myPlayer = playerService.getPlayer(player.getId());
+                playerService.increaseGamesPlayed(myPlayer);
+                playerService.increaseRoundsWon(myPlayer);
+                if (count == 0) {
+                    playerService.increaseFlawlessWin(myPlayer);
+                }
+            });
         } else {
             doMove(game);
         }

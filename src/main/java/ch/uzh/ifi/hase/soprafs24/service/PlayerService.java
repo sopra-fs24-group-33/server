@@ -108,7 +108,41 @@ public class PlayerService {
         }
     }
 
+    public Player increaseGamesPlayed(Player player) {
+        if (player.getIsUser() != null) {
+            User myUser = userService.getUser(player.getIsUser());
+            // System.out.println(myUser.getGamesPlayed());
+            myUser.setGamesPlayed((myUser.getGamesPlayed() + 1));
+            userRepository.save(myUser);
+            userRepository.flush();
+            // System.out.println(myUser.getGamesPlayed());
+        }
+        return player;
+    }
 
+    public Player increaseRoundsWon(Player player) {
+        if (player.getIsUser() != null) {
+            User myUser = userService.getUser(player.getIsUser());
+            // System.out.println(myUser.getGamesPlayed());
+            myUser.setRoundsWon((myUser.getRoundsWon() + 1));
+            userRepository.save(myUser);
+            userRepository.flush();
+            // System.out.println(myUser.getGamesPlayed());
+        }
+        return player;
+    }
+
+    public Player increaseFlawlessWin(Player player) {
+        if (player.getIsUser() != null) {
+            User myUser = userService.getUser(player.getIsUser());
+            // System.out.println(myUser.getGamesPlayed());
+            myUser.setFlawlessWins((myUser.getFlawlessWins() + 1));
+            userRepository.save(myUser);
+            userRepository.flush();
+            // System.out.println(myUser.getGamesPlayed());
+        }
+        return player;
+    }
 
     public Player createPlayer(Player newPlayer) {
         newPlayer.setToken(UUID.randomUUID().toString());
