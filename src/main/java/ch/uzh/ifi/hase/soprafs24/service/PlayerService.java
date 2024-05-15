@@ -110,36 +110,24 @@ public class PlayerService {
 
     public Player increaseGamesPlayed(Player player) {
         if (player.getIsUser() != null) {
-            User myUser = userService.getUser(player.getIsUser());
-            // System.out.println(myUser.getGamesPlayed());
-            myUser.setGamesPlayed((myUser.getGamesPlayed() + 1));
-            userRepository.save(myUser);
-            userRepository.flush();
-            // System.out.println(myUser.getGamesPlayed());
+            User user = userService.getUser(player.getIsUser());
+            userService.increaseGamesPlayed(user);
         }
         return player;
     }
 
-    public Player increaseRoundsWon(Player player) {
+    public Player increaseRoundsWon(Player player, Integer level) {
         if (player.getIsUser() != null) {
-            User myUser = userService.getUser(player.getIsUser());
-            // System.out.println(myUser.getGamesPlayed());
-            myUser.setRoundsWon((myUser.getRoundsWon() + 1));
-            userRepository.save(myUser);
-            userRepository.flush();
-            // System.out.println(myUser.getGamesPlayed());
+            User user = userService.getUser(player.getIsUser());
+            userService.increaseRoundsWon(user, level);
         }
         return player;
     }
 
     public Player increaseFlawlessWin(Player player) {
         if (player.getIsUser() != null) {
-            User myUser = userService.getUser(player.getIsUser());
-            // System.out.println(myUser.getGamesPlayed());
-            myUser.setFlawlessWins((myUser.getFlawlessWins() + 1));
-            userRepository.save(myUser);
-            userRepository.flush();
-            // System.out.println(myUser.getGamesPlayed());
+            User user = userService.getUser(player.getIsUser());
+            userService.increaseFlawlessWin(user);
         }
         return player;
     }
