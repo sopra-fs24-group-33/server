@@ -48,7 +48,7 @@ public class GameServiceTest {
 	@BeforeEach
 	public void setup() {
 		MockitoAnnotations.openMocks(this);
-		gameService = new GameService(gameRepository, playerRepository, userRepository, playerService, gameLobbyService);
+		gameService = new GameService(gameRepository, playerService, gameLobbyService);
 		testGame = new Game();
 		testGame.setId(1L);
 		testGame.setGamepin(111111);
