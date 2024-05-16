@@ -1,7 +1,10 @@
 package ch.uzh.ifi.hase.soprafs24.agoratoken;
 
 import ch.uzh.ifi.hase.soprafs24.constant.Role;
+import io.agora.media.*;
+import org.springframework.stereotype.Service;
 
+@Service
 public class RtcTokenBuilder {
 
     private static String appId = "bb103a1b0b3c477ea5bae0cc1c32525f";
