@@ -22,7 +22,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class WebSocketLobbyHandler extends BaseWebSocketHandler {
 
 	private final GameLobbyService gameLobbyService;
-	private final Map<Integer, Set<WebSocketSession>> lobbySessions = new ConcurrentHashMap<>();
+	final Map<Integer, Set<WebSocketSession>> lobbySessions = new ConcurrentHashMap<>();
 
 	public WebSocketLobbyHandler(GameLobbyService gameLobbyService, ObjectMapper objectMapper) {
 		super(objectMapper);
@@ -39,7 +39,7 @@ public class WebSocketLobbyHandler extends BaseWebSocketHandler {
 		}
 	}
 
-	private void broadcastLobbyState(int lobbyPin) throws Exception {
+	void broadcastLobbyState(int lobbyPin) throws Exception {
 		GameLobby gameLobby = gameLobbyService.getGameLobby(lobbyPin);
 		for (GamePlayer player : gameLobby.getGamePlayers()) {
 			Hibernate.initialize(player.getCards()); // Initialize lazy-loaded collections
@@ -57,7 +57,7 @@ public class WebSocketLobbyHandler extends BaseWebSocketHandler {
 				});
 	}
 
-	private void broadcastLeaveAll(int lobbyPin) {
+	void broadcastLeaveAll(int lobbyPin) {
 		TextMessage message = new TextMessage("leave");
 
 		lobbySessions.getOrDefault(lobbyPin, new CopyOnWriteArraySet<>())

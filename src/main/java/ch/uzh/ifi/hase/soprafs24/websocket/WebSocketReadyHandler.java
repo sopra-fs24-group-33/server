@@ -17,8 +17,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class WebSocketReadyHandler extends BaseWebSocketHandler {
 
 	@Autowired
-	private ReadyStatusService readyStatusService;
-	private final Map<Integer, Set<WebSocketSession>> lobbySessions = new ConcurrentHashMap<>();
+    ReadyStatusService readyStatusService;
+	final Map<Integer, Set<WebSocketSession>> lobbySessions = new ConcurrentHashMap<>();
 
 	public WebSocketReadyHandler(ObjectMapper objectMapper) {
 		super(objectMapper);
@@ -55,7 +55,7 @@ public class WebSocketReadyHandler extends BaseWebSocketHandler {
 		}
 	}
 
-	private void broadcastReadyParticipants(int lobbyPin) {
+	void broadcastReadyParticipants(int lobbyPin) {
 		int readyParticipants = readyStatusService.getReadyParticipants(lobbyPin);
 		String readyParticipantsJson;
 		try {
@@ -74,7 +74,7 @@ public class WebSocketReadyHandler extends BaseWebSocketHandler {
 		}
 	}
 
-	private void broadcastAllReady(int lobbyPin) {
+	void broadcastAllReady(int lobbyPin) {
 		String message = "{\"event\":\"allReady\"}";
 		TextMessage textMessage = new TextMessage(message);
 		lobbySessions.getOrDefault(lobbyPin, new CopyOnWriteArraySet<>())
