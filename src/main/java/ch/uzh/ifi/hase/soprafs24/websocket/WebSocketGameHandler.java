@@ -16,7 +16,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class WebSocketGameHandler extends BaseWebSocketHandler {
 
 	private final GameService gameService;
-	private final Map<Long, Set<WebSocketSession>> gameSessions = new ConcurrentHashMap<>();
+	final Map<Long, Set<WebSocketSession>> gameSessions = new ConcurrentHashMap<>();
 	public WebSocketGameHandler(GameService gameService, ObjectMapper objectMapper) {
 		super(objectMapper);
 		this.gameService = gameService;
@@ -39,7 +39,7 @@ public class WebSocketGameHandler extends BaseWebSocketHandler {
 
 	}
 
-	private void broadcastGameState(long gameId) throws Exception {
+	void broadcastGameState(long gameId) throws Exception {
 		Game game = gameService.getGame(gameId);
 		String gameState = objectMapper.writeValueAsString(DTOMapper.INSTANCE.convertEntityToGameGetDTO(game));
 		TextMessage message = new TextMessage(gameState);
@@ -54,7 +54,7 @@ public class WebSocketGameHandler extends BaseWebSocketHandler {
 				});
 	}
 
-	private void broadcastLeaveAll(long gameId) {
+	void broadcastLeaveAll(long gameId) {
 		TextMessage message = new TextMessage("leave");
 
 		gameSessions.getOrDefault(gameId, new CopyOnWriteArraySet<>())

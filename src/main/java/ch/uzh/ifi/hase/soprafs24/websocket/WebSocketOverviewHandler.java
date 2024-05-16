@@ -22,8 +22,8 @@ public class WebSocketOverviewHandler extends BaseWebSocketHandler {
 
 	private final PlayerService playerService;
 	private final UserService userService;
-	private final Set<WebSocketSession> overviewSessions = new CopyOnWriteArraySet<>();
-	private final Map<String, Long> sessionPlayerMap = new ConcurrentHashMap<>();
+	final Set<WebSocketSession> overviewSessions = new CopyOnWriteArraySet<>();
+	final Map<String, Long> sessionPlayerMap = new ConcurrentHashMap<>();
 
 	public WebSocketOverviewHandler(ObjectMapper objectMapper, PlayerService playerService, UserService userService) {
 		super(objectMapper);
@@ -39,7 +39,7 @@ public class WebSocketOverviewHandler extends BaseWebSocketHandler {
 	}
 
 
-	private void broadcastOverview() throws Exception {
+	void broadcastOverview() throws Exception {
 		// Gather player data and convert to DTOs
 		List<Player> players = playerService.getPlayers();
 		List<PlayerGetDTO> playerDTOs = players.stream()
