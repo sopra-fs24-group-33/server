@@ -89,28 +89,6 @@ public class AccessToken {
         return Utils.hmacSign(appCertificate, baos.toByteArray());
     }
 
-    public boolean fromString(String token) {
-        if (!getVersion().equals(token.substring(0, Utils.VERSION_LENGTH))) {
-            return false;
-        }
-
-        try {
-            appId = token.substring(Utils.VERSION_LENGTH, Utils.VERSION_LENGTH + Utils.APP_ID_LENGTH);
-            PackContent packContent = new PackContent();
-            Utils.unpack(Utils.base64Decode(token.substring(Utils.VERSION_LENGTH + Utils.APP_ID_LENGTH, token.length())), packContent);
-            signature = packContent.signature;
-            crcChannelName = packContent.crcChannelName;
-            crcUid = packContent.crcUid;
-            messageRawContent = packContent.rawMessage;
-            Utils.unpack(messageRawContent, message);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-
-        return true;
-    }
-
     public class PrivilegeMessage implements PackableEx {
         public int salt;
         public int ts;
