@@ -25,6 +25,9 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven {
+        url 'https://jitpack.io' // Add JitPack repository
+    }
 }
 
 springBoot {
@@ -56,6 +59,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
     implementation 'org.json:json:20210307'
+
+    implementation group: 'io.agora', name: 'authentication', version: '1.6.1'
 
 }
 
@@ -93,3 +98,4 @@ if (secretPropsFile.exists()) {
 }
 
 defaultTasks 'bootJar', 'build'
+
