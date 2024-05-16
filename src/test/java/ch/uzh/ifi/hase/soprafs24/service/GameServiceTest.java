@@ -164,7 +164,7 @@ public class GameServiceTest {
 	}
 
 	@Test
-	void testDistributeShameToken() throws Exception {
+	public void testDistributeShameToken() throws Exception {
 		// Setup
 		Game game = new Game();
 		game.setCurrentCard(5);
@@ -200,8 +200,9 @@ public class GameServiceTest {
 		method.setAccessible(false);
 	}
 
+	
 	@Test
-	void testUpdateGamestatus_Success() {
+	public void testUpdateGamestatus_Success() {
 		// Given
 		Long gameId = 1L;
 		Integer playedCard = 5;
@@ -215,6 +216,7 @@ public class GameServiceTest {
 		Set<Integer> cards = new HashSet<>();
 		cards.add(playedCard);  // Ensure at least one card is present that matches the playedCard
 		player.setCards(cards);
+		player.setShame_tokens(0);
 		players.add(player);
 		game.setPlayers(players);
 
@@ -230,6 +232,7 @@ public class GameServiceTest {
 		verify(gameRepository).save(game); // Verify save was called
 		verify(gameRepository).flush(); // Ensure flush was called
 	}
+	
 
 	private Set<Integer> createStack() {
 		Set<Integer> numbers = new HashSet<>();

@@ -40,9 +40,6 @@ public class GameLobby implements Serializable {
         }
     }
 
-
-
-
     public Long getAdmin() {
         return admin;
     }

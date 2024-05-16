@@ -115,4 +115,25 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, String.format(baseErrorMessage, "username", "is"));
         }
     }
+
+    public User increaseGamesPlayed(User user) {
+        user.setGamesPlayed((user.getGamesPlayed() + 1));
+        userRepository.save(user);
+        userRepository.flush();
+        return user;
+    }
+
+    public User increaseRoundsWon(User user, Integer level) {
+        user.setRoundsWon((user.getRoundsWon() + (level - 1)));
+        userRepository.save(user);
+        userRepository.flush();
+        return user;
+    }
+
+    public User increaseFlawlessWin(User user) {
+        user.setFlawlessWins((user.getFlawlessWins() + 1));
+        userRepository.save(user);
+        userRepository.flush();
+        return user;
+    }
 }

@@ -12,6 +12,10 @@ public class User extends SuperUser {
     int gamesPlayed;
     @Column(nullable = false)
     int shame_tokens;
+    @Column(nullable = false)
+    int flawlessWins;
+    @Column(nullable = false)
+    int roundsWon;
     @Column
     int current_shame_tokens;
     @Column(nullable = false)
@@ -38,6 +42,22 @@ public class User extends SuperUser {
 
     public void setShame_tokens(int shame_tokens) {
         this.shame_tokens = shame_tokens;
+    }
+
+    public int getFlawlessWins() {
+        return flawlessWins;
+    }
+
+    public void setFlawlessWins(int flawless_wins) {
+        this.flawlessWins = flawless_wins;
+    }
+
+    public int getRoundsWon() {
+        return roundsWon;
+    }
+
+    public void setRoundsWon(int rounds_won) {
+        this.roundsWon = rounds_won;
     }
 
     public String getPassword() {

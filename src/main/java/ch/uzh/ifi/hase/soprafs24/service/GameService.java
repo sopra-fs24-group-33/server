@@ -1,5 +1,7 @@
 package ch.uzh.ifi.hase.soprafs24.service;
 import ch.uzh.ifi.hase.soprafs24.entity.GamePlayer;
+import ch.uzh.ifi.hase.soprafs24.entity.Player;
+import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.entity.Game;
 import ch.uzh.ifi.hase.soprafs24.entity.GameLobby;
 import ch.uzh.ifi.hase.soprafs24.repository.GameRepository;
@@ -10,10 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashSet;
 import java.util.*;
-import java.util.Random;
-import java.util.Set;
 
 @Service
 @Transactional
@@ -95,7 +94,7 @@ public class GameService {
             game.setSuccessfulMove(1);
             distributeCards(game);
         } else if (game.getSuccessfulMove() == 3) {
-            this.deleteGame(game.getId());
+            // game ended
         } else {
             doMove(game);
         }
@@ -154,6 +153,24 @@ public class GameService {
         }
     }
 
+    private void updateUserInfo(Game game) {
+        // count shame tokens in the game
+        Integer counter = 0;
+        for (GamePlayer player : game.getPlayers()) {
+            counter += player.getShame_tokens();
+        }
+        final Integer count = counter;
+        // update user info
+        game.getPlayers().forEach(player -> {
+            Player myPlayer = playerService.getPlayer(player.getId());
+            playerService.increaseGamesPlayed(myPlayer);
+            playerService.increaseRoundsWon(myPlayer, game.getLevel());
+            if (count == 0) {
+                playerService.increaseFlawlessWin(myPlayer);
+            }
+        });
+    }
+
     private void distributeCards(Game game) {
         if (game.getCards().size() >= game.getLevel() * game.getPlayers().size()) {
             Random rand = new Random();
@@ -175,6 +192,7 @@ public class GameService {
             game.setCards(cardStack);
         } else {
             game.setSuccessfulMove(3); // not enough cards -> end game
+            this.updateUserInfo(game);
         }
     }
 }

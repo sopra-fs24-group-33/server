@@ -108,7 +108,29 @@ public class PlayerService {
         }
     }
 
+    public Player increaseGamesPlayed(Player player) {
+        if (player.getIsUser() != null) {
+            User user = userService.getUser(player.getIsUser());
+            userService.increaseGamesPlayed(user);
+        }
+        return player;
+    }
 
+    public Player increaseRoundsWon(Player player, Integer level) {
+        if (player.getIsUser() != null) {
+            User user = userService.getUser(player.getIsUser());
+            userService.increaseRoundsWon(user, level);
+        }
+        return player;
+    }
+
+    public Player increaseFlawlessWin(Player player) {
+        if (player.getIsUser() != null) {
+            User user = userService.getUser(player.getIsUser());
+            userService.increaseFlawlessWin(user);
+        }
+        return player;
+    }
 
     public Player createPlayer(Player newPlayer) {
         newPlayer.setToken(UUID.randomUUID().toString());

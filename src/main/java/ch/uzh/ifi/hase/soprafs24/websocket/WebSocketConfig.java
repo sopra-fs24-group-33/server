@@ -21,19 +21,19 @@ public class WebSocketConfig implements WebSocketConfigurer {
 	private final CopyOnWriteArrayList<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
 
 	@Autowired
-	private GameLobbyService gameLobbyService;
+	public GameLobbyService gameLobbyService;
 
 	@Autowired
-	private GameService gameService;
+	public GameService gameService;
 
 	@Autowired
-	private PlayerService playerService;
+	public PlayerService playerService;
 
 	@Autowired
-	private UserService userService;
+	public UserService userService;
 
 	@Autowired
-	private ObjectMapper objectMapper;
+	public ObjectMapper objectMapper;
 
 	@Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {

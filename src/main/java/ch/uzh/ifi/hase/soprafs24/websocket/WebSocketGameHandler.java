@@ -54,9 +54,33 @@ public class WebSocketGameHandler extends BaseWebSocketHandler {
 				});
 	}
 
+	private void broadcastLeaveAll(long gameId) {
+		TextMessage message = new TextMessage("leave");
+
+		gameSessions.getOrDefault(gameId, new CopyOnWriteArraySet<>())
+				.forEach(s -> {
+					try {
+						s.sendMessage(message);
+					} catch (Exception e) {
+						System.err.println("Failed to send message: " + e.getMessage());
+					}
+				});
+	}
+
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-		super.afterConnectionClosed(session, status);
-		gameSessions.values().forEach(sessions -> sessions.remove(session));
+		gameSessions.forEach((gameId, sessions) -> {
+			if (sessions.remove(session) && !sessions.isEmpty()) {
+				try {
+					broadcastGameState(gameId);
+				} catch (Exception e) {
+					broadcastLeaveAll(gameId);
+				}
+			}
+		});
+		System.out.println("Removed session from game: Session ID " + session.getId());
 	}
+
 }
+
+
