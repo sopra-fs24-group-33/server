@@ -72,8 +72,11 @@ public class WebSocketGameHandler extends BaseWebSocketHandler {
 		gameSessions.forEach((gameId, sessions) -> {
 			if (sessions.remove(session) && !sessions.isEmpty()) {
 				try {
-					broadcastGameState(gameId);
+					// If connection closed delete the game
+					gameService.deleteGame(gameId);
+					broadcastLeaveAll(gameId);
 				} catch (Exception e) {
+					// If game already deleted skip delete part
 					broadcastLeaveAll(gameId);
 				}
 			}
