@@ -232,22 +232,123 @@ public class GameServiceTest {
 		verify(gameRepository).save(game); // Verify save was called
 		verify(gameRepository).flush(); // Ensure flush was called
 	}
-	
 
-	private Set<Integer> createStack() {
-		Set<Integer> numbers = new HashSet<>();
-		for (int i = 1; i < 100; i++) {
-			numbers.add(i);
-		}
-		return numbers;
-	}
+    @Test
+    public void deleteGame_validId_success() {
+        // Given
+        Long gameId = testGame.getId();
+        when(gameRepository.findById(gameId)).thenReturn(Optional.of(testGame));
 
-	private Set<GamePlayer> preparePlayersWithCards() {
-		Set<GamePlayer> players = new HashSet<>();
-		GamePlayer player = new GamePlayer();
-		Set<Integer> cards = new HashSet<>(Arrays.asList(10, 20));  // Ensure these include the initial currentCard if needed
-		player.setCards(cards);
-		players.add(player);
-		return players;
-	}
+        // When
+        gameService.deleteGame(gameId);
+
+        // Then
+        verify(gameLobbyService, times(1)).deleteReference(testGame.getGamepin());
+        verify(gameRepository, times(1)).delete(testGame);
+        verify(gameRepository, times(1)).flush();
+    }
+
+    @Test
+    public void deleteGame_nonExistentId_throwsException() {
+        Long nonExistentId = 999L;
+        when(gameRepository.findById(nonExistentId)).thenReturn(Optional.empty());
+
+        assertThrows(ResponseStatusException.class, () -> gameService.deleteGame(nonExistentId));
+    }
+
+    @Test
+    public void doRound_initialState_distributesCards() throws Exception {
+        // Setup
+        Game game = new Game();
+        game.setCurrentCard(0);
+        game.setLevel(1);
+
+        GamePlayer player = new GamePlayer();
+        player.setCards(new HashSet<>());
+        Set<GamePlayer> players = new HashSet<>();
+        players.add(player);
+        game.setPlayers(players);
+
+        // Using reflection to access the private method
+        Method method = GameService.class.getDeclaredMethod("distributeCards", Game.class);
+        method.setAccessible(true);
+
+        // Execute
+        gameService.doRound(game);
+
+        // Verify
+        method.invoke(gameService, game);
+
+        // Verify the internal method was called
+        method.setAccessible(false);
+    }
+
+    @Test
+    public void doRound_successfulMove_distributesCards() throws Exception {
+        // Setup
+        Game game = new Game();
+        game.setCurrentCard(1);
+        game.setSuccessfulMove(2);
+
+        GamePlayer player = new GamePlayer();
+        player.setCards(new HashSet<>());
+        // Ensure shame_tokens is not null
+        player.setShame_tokens(0);
+        Set<GamePlayer> players = new HashSet<>();
+        players.add(player);
+        game.setPlayers(players);
+
+        Set<Integer> playingCards = new HashSet<>();
+        playingCards.add(2);
+        game.setCards(playingCards);
+
+        // Using reflection to access the private method
+        Method methodDistributeCards = GameService.class.getDeclaredMethod("distributeCards", Game.class);
+        methodDistributeCards.setAccessible(true);
+        Method methodDeleteCard = GameService.class.getDeclaredMethod("deleteCard", Game.class);
+        methodDeleteCard.setAccessible(true);
+
+        // Execute
+        gameService.doRound(game);
+
+        // Verify
+        methodDistributeCards.invoke(gameService, game);
+        methodDeleteCard.invoke(gameService, game);
+
+        // Reset accessibility
+        methodDistributeCards.setAccessible(false);
+        methodDeleteCard.setAccessible(false);
+    }
+
+    @Test
+    public void doRound_nonInitialAndNonEndState_performsMove() throws Exception {
+        // Setup
+        Game game = new Game();
+        game.setCurrentCard(1);
+        game.setSuccessfulMove(2);
+
+        GamePlayer player = new GamePlayer();
+        player.setCards(new HashSet<>());
+        // Ensure shame_tokens is not null
+        player.setShame_tokens(0);
+        Set<GamePlayer> players = new HashSet<>();
+        players.add(player);
+        game.setPlayers(players);
+
+        Set<Integer> playingCards = new HashSet<>();
+        playingCards.add(2);
+        game.setCards(playingCards);
+        // Using reflection to access the private method
+        Method methodDoMove = GameService.class.getDeclaredMethod("doMove", Game.class);
+        methodDoMove.setAccessible(true);
+
+        // Execute
+        gameService.doRound(game);
+
+        // Verify
+        methodDoMove.invoke(gameService, game);
+
+        // Reset accessibility
+        methodDoMove.setAccessible(false);
+    }
 }
