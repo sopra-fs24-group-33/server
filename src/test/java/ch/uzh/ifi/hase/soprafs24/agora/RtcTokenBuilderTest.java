@@ -58,4 +58,81 @@ class RtcTokenBuilderTest {
         assertNotNull(token);
         assertFalse(token.isEmpty());
     }
+    @Test
+    void testBuildTokenWithUserAccount_NullChannelName() {
+        RtcTokenBuilder rtcTokenBuilder = new RtcTokenBuilder();
+        String userAccount = "testUser";
+        Role role = Role.Role_Attendee;
+
+        assertThrows(NullPointerException.class, () -> {
+            rtcTokenBuilder.buildTokenWithUserAccount(null, userAccount, role);
+        });
+    }
+
+    @Test
+    void testBuildTokenWithUserAccount_EmptyChannelName() {
+        RtcTokenBuilder rtcTokenBuilder = new RtcTokenBuilder();
+        String channelName = "";
+        String userAccount = "testUser";
+        Role role = Role.Role_Attendee;
+
+        String token = rtcTokenBuilder.buildTokenWithUserAccount(channelName, userAccount, role);
+
+        assertNotNull(token);
+        assertFalse(token.isEmpty());
+    }
+
+    @Test
+    void testBuildTokenWithUserAccount_NullUserAccount() {
+        RtcTokenBuilder rtcTokenBuilder = new RtcTokenBuilder();
+        String channelName = "testChannel";
+        Role role = Role.Role_Attendee;
+
+        assertThrows(NullPointerException.class, () -> {
+            rtcTokenBuilder.buildTokenWithUserAccount(channelName, null, role);
+        });
+    }
+
+    @Test
+    void testBuildTokenWithUserAccount_EmptyUserAccount() {
+        RtcTokenBuilder rtcTokenBuilder = new RtcTokenBuilder();
+        String channelName = "testChannel";
+        String userAccount = "";
+        Role role = Role.Role_Attendee;
+
+        String token = rtcTokenBuilder.buildTokenWithUserAccount(channelName, userAccount, role);
+
+        assertNotNull(token);
+        assertFalse(token.isEmpty());
+    }
+
+    @Test
+    void testBuildTokenWithUserAccount_InvalidRole() {
+        RtcTokenBuilder rtcTokenBuilder = new RtcTokenBuilder();
+        String channelName = "testChannel";
+        String userAccount = "testUser";
+        Role role = null;
+
+        String token = rtcTokenBuilder.buildTokenWithUserAccount(channelName, userAccount, role);
+
+        assertNotNull(token);
+        assertFalse(token.isEmpty());
+    }
+
+    @Test
+    void testBuildTokenWithUserAccount_ExpirationTime() {
+        RtcTokenBuilder rtcTokenBuilder = new RtcTokenBuilder();
+        String channelName = "testChannel";
+        String userAccount = "testUser";
+        Role role = Role.Role_Publisher;
+
+        long currentTime = System.currentTimeMillis() / 1000;
+        String token = rtcTokenBuilder.buildTokenWithUserAccount(channelName, userAccount, role);
+
+        assertNotNull(token);
+        assertFalse(token.isEmpty());
+
+    }
+
+
 }
