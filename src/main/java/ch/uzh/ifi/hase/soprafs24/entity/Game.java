@@ -33,7 +33,7 @@ public class Game implements Serializable {
     // 0 = neutral
     // 1 = correct move
     // 2 = wrong move
-    // end game
+    // 3 = game ended
 
     @Column
     private Integer level = 1;
