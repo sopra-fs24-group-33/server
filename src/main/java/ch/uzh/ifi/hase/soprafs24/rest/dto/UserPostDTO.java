@@ -12,6 +12,8 @@ public class UserPostDTO {
     private int gamesPlayed;
     private int current_shame_tokens;
     private int shame_tokens;
+		private int roundsWon;
+		private int flawlessWins;
     private String password;
     private String token;
     private UserStatus status;
@@ -72,4 +74,10 @@ public class UserPostDTO {
     public void setShame_tokens(int shame_tokens) {
         this.shame_tokens = shame_tokens;
     }
+
+		public int getRoundsWon() { return this.roundsWon; }
+		public void setRoundsWon(int roundsWon) { this.roundsWon = roundsWon; }
+
+		public int getFlawlessWins() { return this.flawlessWins; }
+		public void setFlawlessWins(int flawlessWins) { this.flawlessWins = flawlessWins; }
 }

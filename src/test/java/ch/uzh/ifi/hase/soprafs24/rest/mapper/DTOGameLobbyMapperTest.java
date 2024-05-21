@@ -45,7 +45,7 @@ public class DTOGameLobbyMapperTest {
         gameLobby.setPin(1234);
         gameLobby.setGameid(1L);
 
-        Set<GamePlayer> players = new HashSet<>();
+        List<GamePlayer> players = new ArrayList<>();
         gameLobby.setPlayers(players);
 
         GameLobbyGetDTO gameLobbyGetDTO = DTOMapper.INSTANCE.convertEntityToGameLobbyGetDTO(gameLobby);

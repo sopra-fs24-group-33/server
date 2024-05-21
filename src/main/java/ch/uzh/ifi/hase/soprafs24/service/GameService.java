@@ -62,7 +62,7 @@ public class GameService {
         try {
             Game game = new Game();
             game.setGamepin(lobby.getPin());
-            Set<GamePlayer> lobbyPlayers = lobby.getGamePlayers();
+            List<GamePlayer> lobbyPlayers = lobby.getGamePlayers();
             for (GamePlayer gamePlayer : lobbyPlayers) {
                 game.getPlayers().add(gamePlayer);
                 gamePlayer.setGame(game);

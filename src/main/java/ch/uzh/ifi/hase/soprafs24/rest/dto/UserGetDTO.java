@@ -12,6 +12,8 @@ public class UserGetDTO {
     private int gamesPlayed;
     private int shame_tokens;
     private int current_shame_tokens;
+		private int roundsWon;
+		private int flawlessWins;
     private String password;
     private String token;
     private UserStatus status;
@@ -65,4 +67,10 @@ public class UserGetDTO {
     public void setCurrent_shame_tokens(int current_shame_tokens) {
         this.current_shame_tokens = current_shame_tokens;
     }
+
+		public int getRoundsWon() { return this.roundsWon; }
+		public void setRoundsWon(int roundsWon) { this.roundsWon = roundsWon; }
+
+		public int getFlawlessWins() { return this.flawlessWins; }
+		public void setFlawlessWins(int flawlessWins) { this.flawlessWins = flawlessWins; }
 }
