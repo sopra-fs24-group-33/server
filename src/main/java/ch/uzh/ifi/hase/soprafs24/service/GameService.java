@@ -114,10 +114,12 @@ public class GameService {
     }
 
     private void distributeShameToken(Game game) {
+        Set<Integer> playingCards = game.getPlayingCards();
+        Integer minimum = Collections.min(playingCards);
         for (GamePlayer player : game.getPlayers()) {
             Set<Integer> myCards = player.getCards();
             for (Integer card : myCards) {
-                if (card.equals(game.getCurrentCard())) {
+                if (card.equals(game.getCurrentCard()) || card.equals(minimum)) {
                     Integer currentShameToken = player.getShame_tokens();
                     player.setShame_tokens(currentShameToken + 1);
                     playerService.addShame_token(player.getId());
