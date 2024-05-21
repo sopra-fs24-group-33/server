@@ -11,13 +11,10 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Optional;
+import java.util.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -69,20 +66,22 @@ public class GameServiceTest {
 		player2.setId(2L);
 		player2.setName("Player2");
 
-		Set<GamePlayer> players = new HashSet<>();
+		List<GamePlayer> playersList = new ArrayList<>();
 		GamePlayer gamePlayer1 = new GamePlayer();
 		gamePlayer1.setId(player1.getId());
 		gamePlayer1.setName(player1.getName());
-		players.add(gamePlayer1);
+		playersList.add(gamePlayer1);
 
 		GamePlayer gamePlayer2 = new GamePlayer();
 		gamePlayer2.setId(player2.getId());
 		gamePlayer2.setName(player2.getName());
-		players.add(gamePlayer2);
+		playersList.add(gamePlayer2);
 
-		testLobby.setGamePlayers(players);
+		testLobby.setGamePlayers(playersList);
 		testLobby.setAdmin(player1.getId());
-		testGame.setPlayers(players);
+
+		Set<GamePlayer> playersSet = new HashSet<>(playersList); // Convert List to Set
+		testGame.setPlayers(playersSet); // Set the players as a Set in testGame
 
 		// Mock behavior of the repository
 		Mockito.when(gamelobbyRepository.save(Mockito.any())).thenReturn(testLobby);
@@ -97,12 +96,14 @@ public class GameServiceTest {
 		// Then
 		assertNotNull(createdGame);
 		assertEquals(111111, createdGame.getGamepin());
-		assertEquals(players, createdGame.getPlayers());
+		assertEquals(playersSet, createdGame.getPlayers()); // Compare with Set
 		assertEquals(1, createdGame.getLevel());
 		assertEquals(0, createdGame.getSuccessfulMove());
 		assertEquals(0, createdGame.getCurrentCard());
 		// Additional assertions as needed
 	}
+
+
 	@Test
 	public void getGame_nonExistentId_throwsException() {
 		Long nonExistentId = 999L;

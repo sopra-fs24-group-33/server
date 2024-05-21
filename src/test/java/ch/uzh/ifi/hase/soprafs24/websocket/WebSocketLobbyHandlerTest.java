@@ -12,6 +12,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.CloseStatus;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -54,7 +55,7 @@ public class WebSocketLobbyHandlerTest {
         setPin(gameLobby, 1);
 
         GamePlayer player = new GamePlayer();
-        gameLobby.setGamePlayers(Set.of(player));
+        gameLobby.setGamePlayers(List.of(player));
         when(gameLobbyService.getGameLobby(1)).thenReturn(gameLobby);
 
         webSocketLobbyHandler.handleConnectionEstablishedWithParams(Map.of("lobby", "1"), session);
