@@ -1,10 +1,10 @@
-# DeGame
-
-Welcome to our version of Steffen Brendorff's card game "The Game" that promotes teamwork and having fun with eachother.
-
 <p align="center">
 	<img src="figures/DeGameLogo.png" width="100">
 </p>
+
+# DeGame
+
+Welcome to our version of Steffen Brendorff's card game "The Game" that promotes teamwork and having fun with eachother.
 
 ## Table of contents
 1. [Motivaiton & Game Rules](#motivation--game-rules)
