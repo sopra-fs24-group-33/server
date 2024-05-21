@@ -34,9 +34,16 @@ public class WebSocketGameHandler extends BaseWebSocketHandler {
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		String payload = message.getPayload();
 		System.out.println("Received game messsage: " + payload);
-		long gameId = Long.parseLong(payload);
-		broadcastGameState(gameId);
-
+		if (payload.equals("returnToLobby")) {
+			gameSessions.forEach((gameId, sessions) -> {
+				if (sessions.remove(session) && !sessions.isEmpty()) {
+					broadcastReturnToLobby(gameId);
+				}
+			});
+		} else {
+			long gameId = Long.parseLong(payload);
+			broadcastGameState(gameId);
+		}
 	}
 
 	void broadcastGameState(long gameId) throws Exception {
@@ -56,6 +63,19 @@ public class WebSocketGameHandler extends BaseWebSocketHandler {
 
 	void broadcastLeaveAll(long gameId) {
 		TextMessage message = new TextMessage("leave");
+
+		gameSessions.getOrDefault(gameId, new CopyOnWriteArraySet<>())
+				.forEach(s -> {
+					try {
+						s.sendMessage(message);
+					} catch (Exception e) {
+						System.err.println("Failed to send message: " + e.getMessage());
+					}
+				});
+	}
+
+	void broadcastReturnToLobby(long gameId) {
+		TextMessage message = new TextMessage("return");
 
 		gameSessions.getOrDefault(gameId, new CopyOnWriteArraySet<>())
 				.forEach(s -> {
