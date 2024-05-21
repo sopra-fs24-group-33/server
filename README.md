@@ -3,7 +3,7 @@
 Welcome to our version of Steffen Brendorff's card game "The Game" that promotes teamwork and having fun with eachother.
 
 <p align="center">
-	<img src="figures/DeGameLogo.png" width="550">
+	<img src="figures/DeGameLogo.png" width="100">
 </p>
 
 ## Table of contents
