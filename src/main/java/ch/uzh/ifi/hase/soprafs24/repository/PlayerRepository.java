@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository("guestRepository")
 public interface PlayerRepository extends JpaRepository<Player, Long> {
+    GameLobby findByName(String name);
 }

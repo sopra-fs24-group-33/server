@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.Optional;
 
+import java.util.Random;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,6 +37,7 @@ public class PlayerService {
     private final PlayerRepository playerRepository;
     private final UserRepository userRepository;
     private final UserService userService;
+    private final Random random = new Random();
 
     @Autowired
     public PlayerService(@Qualifier("guestRepository") PlayerRepository playerRepository, UserRepository userRepository, UserService userService) {
@@ -76,6 +78,7 @@ public class PlayerService {
 
     public Player loginPlayer()   {
         Player player = new Player();
+        player.setName("Guest#" + this.generateNameAddition());
         player.setToken(UUID.randomUUID().toString());
         playerRepository.save(player);
         playerRepository.flush();
@@ -139,6 +142,16 @@ public class PlayerService {
 
         log.debug("Created Information for Guest: {}", newPlayer);
         return newPlayer;
+    }
+
+    private String generateNameAddition() {
+        Integer nameAddition;
+
+        do {
+            nameAddition = 1000 + random.nextInt(8999);
+        } while (playerRepository.findByName("Guest#" + nameAddition.toString()) != null);
+
+        return nameAddition.toString();
     }
 
     /**

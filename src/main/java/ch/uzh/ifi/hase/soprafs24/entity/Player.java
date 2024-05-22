@@ -14,7 +14,6 @@ public class Player extends SuperUser {
     public Player()  {
         super();
         this.setIsUser(null);
-        this.setName("guest");
         this.setShame_tokens(0);
     }
     @Column
@@ -57,5 +56,4 @@ public class Player extends SuperUser {
     public void setIsUser(Long user) {
         this.isUser = user;
     }
-
 }
