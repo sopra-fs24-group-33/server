@@ -73,25 +73,34 @@ public class GameLobbyService {
     }
     
     public GameLobby addPlayer(Player player, GameLobby lobby) {
-        GamePlayer gamePlayer = new GamePlayer();
-        gamePlayer.setName(player.getName());
-        gamePlayer.setId(player.getId());
-        lobby.addPlayer(gamePlayer);
-        gamelobbyRepository.save(lobby);
-        gamelobbyRepository.flush();
-        return lobby;
+        try {
+            GamePlayer gamePlayer = new GamePlayer();
+            gamePlayer.setName(player.getName());
+            gamePlayer.setId(player.getId());
+            lobby.addPlayer(gamePlayer);
+            gamelobbyRepository.save(lobby);
+            gamelobbyRepository.flush();
+            return lobby;
+        }   catch (ResponseStatusException ex) {
+            throw ex;
+        }
     }
     public GameLobby removePlayer(Player player, GameLobby lobby)  {
-        Long id = player.getId();
-        lobby.removePlayer(id);
-        if (id == lobby.getAdmin()) {
-            gamelobbyRepository.delete(lobby);
+        try {
+            Long id = player.getId();
+            lobby.removePlayer(id);
+            if (id == lobby.getAdmin()) {
+                gamelobbyRepository.delete(lobby);
+                gamelobbyRepository.flush();
+                return null;
+            }
+            gamelobbyRepository.save(lobby);
             gamelobbyRepository.flush();
-            return null;
+            return lobby;
         }
-        gamelobbyRepository.save(lobby);
-        gamelobbyRepository.flush();
-        return lobby;
+        catch (ResponseStatusException ex) {
+            throw ex;
+        }
     }
     private int generatePin() {
         int pin;
