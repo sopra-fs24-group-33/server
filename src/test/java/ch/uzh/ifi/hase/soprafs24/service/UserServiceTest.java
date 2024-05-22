@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.Optional;
 
@@ -92,6 +93,113 @@ public class UserServiceTest {
     public void putUser_nonexistentUser_throwsException() {
         assertThrows(ResponseStatusException.class, () -> userService.putUser(testUser.getId(), null));
     }
+
+    @Test
+    public void addShame_token_success() {
+        // Arrange
+        Mockito.when(userRepository.findById(testUser.getId())).thenReturn(Optional.of(testUser));
+
+        // Act
+        userService.addShame_token(testUser.getId());
+
+        // Assert
+        assertEquals(1, testUser.getShame_tokens());
+        Mockito.verify(userRepository, Mockito.times(1)).save(testUser);
+        Mockito.verify(userRepository, Mockito.times(1)).flush();
+    }
+
+    @Test
+    public void addShame_token_userNotFound_throwsException() {
+        // Arrange
+        Mockito.when(userRepository.findById(testUser.getId())).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(ResponseStatusException.class, () -> userService.addShame_token(testUser.getId()));
+    }
+
+    @Test
+    public void addShame_token_exceptionThrown() {
+        // Arrange
+        Mockito.when(userRepository.findById(testUser.getId())).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        // Act & Assert
+        assertThrows(ResponseStatusException.class, () -> userService.addShame_token(testUser.getId()));
+    }
+
+    @Test
+    public void logoutUser_success() {
+        // Arrange
+        testUser.setStatus(UserStatus.ONLINE);
+        Mockito.when(userRepository.save(testUser)).thenReturn(testUser);
+
+        // Act
+        User result = userService.logoutUser(testUser);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(UserStatus.OFFLINE, result.getStatus());
+        Mockito.verify(userRepository, Mockito.times(1)).save(testUser);
+        Mockito.verify(userRepository, Mockito.times(1)).flush();
+    }
+
+    @Test
+    public void logoutUser_userNotFound_throwsException() {
+        // Arrange
+        Mockito.when(userRepository.save(Mockito.any(User.class))).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        // Act & Assert
+        assertThrows(ResponseStatusException.class, () -> userService.logoutUser(testUser));
+    }
+    @Test
+    public void increaseGamesPlayed_success() {
+        // Arrange
+        testUser.setGamesPlayed(1);
+        Mockito.when(userRepository.save(testUser)).thenReturn(testUser);
+
+        // Act
+        User result = userService.increaseGamesPlayed(testUser);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(2, result.getGamesPlayed());
+        Mockito.verify(userRepository, Mockito.times(1)).save(testUser);
+        Mockito.verify(userRepository, Mockito.times(1)).flush();
+    }
+
+    @Test
+    public void increaseRoundsWon_success() {
+        // Arrange
+        testUser.setRoundsWon(2);
+        int level = 3;
+        Mockito.when(userRepository.save(testUser)).thenReturn(testUser);
+
+        // Act
+        User result = userService.increaseRoundsWon(testUser, level);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(4, result.getRoundsWon()); // 2 + (3 - 1)
+        Mockito.verify(userRepository, Mockito.times(1)).save(testUser);
+        Mockito.verify(userRepository, Mockito.times(1)).flush();
+    }
+
+    @Test
+    public void increaseFlawlessWin_success() {
+        // Arrange
+        testUser.setFlawlessWins(1);
+        Mockito.when(userRepository.save(testUser)).thenReturn(testUser);
+
+        // Act
+        User result = userService.increaseFlawlessWin(testUser);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(2, result.getFlawlessWins());
+        Mockito.verify(userRepository, Mockito.times(1)).save(testUser);
+        Mockito.verify(userRepository, Mockito.times(1)).flush();
+    }
+
+
 
 
 }
