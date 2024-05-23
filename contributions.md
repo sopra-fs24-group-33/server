@@ -2,8 +2,6 @@
 [Figma 2](https://www.figma.com/design/NTMeHzrE15Og9SLyogvyWH/De-Game?node-id=22%3A70&t=eN3Um8GaOVobRByj-1)
 
 
-[1]( -> corresponding commit(s): [1](
-
 ## week 1 (25.03.-31.03.)
 
 Paulin <br>
