@@ -226,6 +226,7 @@ Jenifer  <br>
 
 Paulin <br>
 - display shame tokens in a better way [fix] (corresponding commit(s): [1](https://github.com/sopra-fs24-group-33/client/commit/60419d8039119a4d5c719ff8cb571a4bf402af83))
+- UI fixes (draw cards button, game rules, lobby)[fix] (corresponding commit(s): [1](https://github.com/sopra-fs24-group-33/client/commit/c529bebb17b652fa594cb870bd0b2636a4d4817c))
 
 Valentin <br>
 - add unique guestnames (corresponding commit(s): [1](https://github.com/sopra-fs24-group-33/server/commit/8ec91816b7243a51103bba9a5835f9c3e28ab6bf)) <br>
