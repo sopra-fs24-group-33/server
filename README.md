@@ -139,9 +139,23 @@ To configure a debugger for SpringBoot's Tomcat servlet (i.e. the process you st
 
 ## Roadmap
 
-### different options in Shame Token distribution
+### Shame Token Distribution Options
+Enhance the functionality of shame token distribution by providing different options for determining who receives the token.
 
-An additional feature that could be added would be different options to who gets the shame token. It could be the person that did not contribute to the discussion beforehand or a voting option could be implemented.
+- **Non-contributor Penalty**: Automatically assign the shame token to the person who did not contribute to the discussion beforehand.
+- **Voting System**: Allow players to vote on who should receive the shame token.
+
+### Invitation Service
+Introduce an invitation service to allow players to invite others from the overview directly into a lobby.
+
+- **Instant Notifications**: Players receiving invitations will get them instantly via WebSocket.
+- **Accept/Deny**: Accept or Deny invitation via Rest API.
+
+### Game Variations
+Expand the game's variety by introducing new options and modes.
+
+- **Customizable Card Sets**: Allow players to add more cards, remove cards, or modify the card set.
+- **Game Modes**: Implement different game modes where cards can appear in double/twice, or other unique variations.
 
 ## Authors & Acknowledgement
 
