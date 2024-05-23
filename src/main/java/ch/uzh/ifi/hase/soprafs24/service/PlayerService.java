@@ -144,12 +144,12 @@ public class PlayerService {
         return newPlayer;
     }
 
-    private String generateNameAddition() {
+    public String generateNameAddition() {
         Integer nameAddition;
 
         do {
             nameAddition = 1000 + random.nextInt(8999);
-        } while (playerRepository.findByName("Guest#" + nameAddition.toString()) != null);
+        } while (playerRepository.findByName("Guest#" + nameAddition) != null);
 
         return nameAddition.toString();
     }
