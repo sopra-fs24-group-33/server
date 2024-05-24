@@ -243,6 +243,10 @@ Miguel  <br>
 - more tests (corresponding commit(s): [1](https://github.com/sopra-fs24-group-33/server/commit/b6790d0c79e324c7c8e3ca62ef9aca77c61aad34), [2](https://github.com/sopra-fs24-group-33/server/commit/b80b3af6aae0af03e5c4eee854aa0af3935e8bcd), [3](https://github.com/sopra-fs24-group-33/server/commit/b8ad6348883949f887c74ddb709b4f26d2d321d8)) <br>
 - [merge](https://github.com/sopra-fs24-group-33/server/commit/5a393d4a53f0c0a45fdbee52abe239ff006d355d)
 - fixed mic toggle issue (corresponding commit(s): [1](https://github.com/sopra-fs24-group-33/client/commit/f3380b34df425a6c0181fc4dc2b06ae33e8997a5))
+- updates (corresponding commit(s): [1](https://github.com/sopra-fs24-group-33/client/commit/61b257cfbcab7d3022c0253e8afb689e614a8440))
+- added check for muteex variable (corresponding commit(s): [1](https://github.com/sopra-fs24-group-33/client/commit/ada159ae2c0fede90bf63874fc1f2faa6decbe1a))
+- mute_toggle_fix (corresponding commit(s): [1](https://github.com/sopra-fs24-group-33/client/commit/c27721d5956ad3103c0abe01eaf216c17dfd4ec2))
+- added cammera not available check (corresponding commit(s): [1](https://github.com/sopra-fs24-group-33/client/commit/dc2ce14a38a6ed0b5ab773badaacd9e438c6c512))
 
 Jenifer  <br>
 - new shame token distribution (corresponding commit(s): [1](https://github.com/sopra-fs24-group-33/server/commit/726cf8032849932fee30e94abf7de15bc62003c0)) <br>
